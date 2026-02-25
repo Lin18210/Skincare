@@ -38,14 +38,14 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    Promise.all([
+    Promise.allSettled([
       api.get('/api/admin/stats'),
       api.get('/api/admin/revenue?period=month'),
       api.get('/api/admin/product-stats'),
     ]).then(([s, r, ps]) => {
-      setStats(s.data);
-      setRevenue(r.data);
-      setProductStats(ps.data);
+      if (s.status === 'fulfilled') setStats(s.value.data);
+      if (r.status === 'fulfilled') setRevenue(r.value.data);
+      if (ps.status === 'fulfilled') setProductStats(ps.value.data);
     }).finally(() => setLoading(false));
   }, []);
 
