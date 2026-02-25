@@ -13,32 +13,53 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ── CORS: manual headers first (runs before everything, even errors) ──────
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
-  if (req.method === 'OPTIONS') return res.sendStatus(200); // preflight done
-  next();
-});
-// cors package as backup
-app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE','OPTIONS','PATCH'], allowedHeaders: ['Content-Type','Authorization'] }));
-app.use(express.json());
+/* ================================
+   ✅ PROPER CORS CONFIGURATION
+   ================================ */
 
-
-
-// Root route
-app.get('/', (req, res) => res.json({
-  name: 'CutieSkin API 🌸',
-  status: 'running',
-  version: '1.0.0',
-  endpoints: ['/api/auth', '/api/products', '/api/categories', '/api/quiz', '/api/cart', '/api/orders', '/api/admin'],
+app.use(cors({
+  origin: "https://skincare-ruddy-rho.vercel.app", // your frontend URL
+  credentials: true, // allow cookies / auth headers
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Health check (used by Render)
-app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+// Important: handle preflight
+app.options('*', cors());
 
-// Routes
+app.use(express.json());
+
+/* ================================
+   ROOT & HEALTH CHECK
+   ================================ */
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    name: 'CutieSkin API 🌸',
+    status: 'running',
+    version: '1.0.0',
+    endpoints: [
+      '/api/auth',
+      '/api/products',
+      '/api/categories',
+      '/api/quiz',
+      '/api/cart',
+      '/api/orders',
+      '/api/admin'
+    ],
+  });
+});
+
+// Health check (Render uses this)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+/* ================================
+   ROUTES
+   ================================ */
+
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -47,12 +68,19 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Global error handler
+/* ================================
+   GLOBAL ERROR HANDLER
+   ================================ */
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal server error' });
 });
 
+/* ================================
+   START SERVER
+   ================================ */
+
 app.listen(PORT, () => {
-  console.log(`🚀 Skincare API running on http://localhost:${PORT}`);
+  console.log(`🚀 Skincare API running on port ${PORT}`);
 });
