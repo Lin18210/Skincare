@@ -17,7 +17,15 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Health check
+// Root route
+app.get('/', (req, res) => res.json({
+  name: 'CutieSkin API 🌸',
+  status: 'running',
+  version: '1.0.0',
+  endpoints: ['/api/auth', '/api/products', '/api/categories', '/api/quiz', '/api/cart', '/api/orders', '/api/admin'],
+}));
+
+// Health check (used by Render)
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
 // Routes
