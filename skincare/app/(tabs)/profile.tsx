@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  SafeAreaView, ActivityIndicator, Alert,
+  SafeAreaView, ActivityIndicator, Alert, Platform,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,7 +17,14 @@ export default function ProfileScreen() {
     api.get('/api/orders').then(r => setOrders(r.data)).finally(() => setLoading(false));
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (Platform.OS === 'web') {
+      // Alert.alert button callbacks are ignored on web
+      if (!window.confirm('Are you sure you want to logout?')) return;
+      await logout();
+      router.replace('/login');
+      return;
+    }
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Logout', style: 'destructive', onPress: async () => { await logout(); router.replace('/login'); } },
