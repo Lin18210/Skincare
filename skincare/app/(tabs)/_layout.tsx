@@ -1,60 +1,62 @@
 import React from 'react';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter, usePathname } from 'expo-router';
 import {
   View, Text, StyleSheet, TouchableOpacity, Platform, StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '@/context/CartContext';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 // ── Tab definitions ────────────────────────────────────────
-const TAB_ICONS: Record<string, { icon: string; label: string }> = {
-  index:    { icon: 'sparkles-outline', label: 'Quiz' },
-  products: { icon: 'grid-outline',     label: 'Products' },
-  cart:     { icon: 'bag-outline',      label: 'Cart' },
-  profile:  { icon: 'person-outline',   label: 'Profile' },
-};
+const TABS = [
+  { id: 'index',    icon: 'sparkles-outline', label: 'Quiz',     route: '/(tabs)' },
+  { id: 'products', icon: 'grid-outline',     label: 'Products', route: '/products' },
+  { id: 'cart',     icon: 'bag-outline',      label: 'Cart',     route: '/cart' },
+  { id: 'profile',  icon: 'person-outline',   label: 'Profile',  route: '/profile' },
+];
 
 // ── Custom top navigation bar ──────────────────────────────
-function TopNavBar({ navigation, state, descriptors }: any) {
+function TopNavBar() {
   const { cartCount } = useCart();
+  const router = useRouter();
+  const pathname = usePathname();
+  
   const statusBarH = Platform.OS === 'android' ? (StatusBar.currentHeight || 24) : 0;
-
-  const visibleRoutes = state.routes.filter((r: any) => {
-    const opts = descriptors[r.key]?.options;
-    return opts?.href !== null;
-  });
 
   return (
     <View style={[styles.bar, { paddingTop: statusBarH + 8 }]}>
-      <Text style={styles.logo}>✨ CutieSkin</Text>
-      <View style={styles.tabs}>
-        {visibleRoutes.map((route: any) => {
-          const isFocused = state.routes[state.index]?.name === route.name;
-          const meta = TAB_ICONS[route.name];
-          if (!meta) return null;
+      {/* Logo */}
+      <TouchableOpacity onPress={() => router.push('/(tabs)')} activeOpacity={0.7}>
+        <Text style={styles.logo}>✨ CutieSkin</Text>
+      </TouchableOpacity>
 
-          const onPress = () => {
-            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-            if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
-          };
+      {/* Tabs */}
+      <View style={styles.tabs}>
+        {TABS.map(tab => {
+          // Robust pathname check
+          const isFocused = (tab.id === 'index' && pathname === '/') || 
+                            (tab.id !== 'index' && pathname.includes(tab.id));
 
           return (
-            <TouchableOpacity key={route.key} style={styles.tab} onPress={onPress} activeOpacity={0.7}>
+            <TouchableOpacity 
+              key={tab.id} 
+              style={styles.tab} 
+              onPress={() => router.push(tab.route as any)} 
+              activeOpacity={0.7}
+            >
               <View>
                 <Ionicons
-                  name={meta.icon as any}
+                  name={tab.icon as any}
                   size={20}
                   color={isFocused ? '#C2185B' : '#AD7FA0'}
                 />
-                {route.name === 'cart' && cartCount > 0 && (
+                {tab.id === 'cart' && cartCount > 0 && (
                   <View style={styles.badge}>
                     <Text style={styles.badgeText}>{cartCount > 99 ? '99+' : cartCount}</Text>
                   </View>
                 )}
               </View>
               <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
-                {meta.label}
+                {tab.label}
               </Text>
             </TouchableOpacity>
           );
@@ -67,19 +69,21 @@ function TopNavBar({ navigation, state, descriptors }: any) {
 // ── Layout ─────────────────────────────────────────────────
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: true,
-        header: (props) => <TopNavBar {...props} />,
-        tabBarStyle: { display: 'none' }, // Completely hide the bottom bar
-      }}
-    >
-      <Tabs.Screen name="index" />
-      <Tabs.Screen name="products" />
-      <Tabs.Screen name="cart" />
-      <Tabs.Screen name="profile" />
-      <Tabs.Screen name="explore" options={{ href: null } as any} />
-    </Tabs>
+    <View style={{ flex: 1 }}>
+      <TopNavBar />
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: { display: 'none' }, // Keep bottom bar hidden
+        }}
+      >
+        <Tabs.Screen name="index" />
+        <Tabs.Screen name="products" />
+        <Tabs.Screen name="cart" />
+        <Tabs.Screen name="profile" />
+        <Tabs.Screen name="explore" options={{ href: null } as any} />
+      </Tabs>
+    </View>
   );
 }
 
@@ -98,6 +102,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 10,
     gap: 8,
+    zIndex: 100, // Ensure it stays on top
   },
   logo: {
     fontSize: 17,
