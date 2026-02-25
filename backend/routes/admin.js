@@ -96,7 +96,44 @@ router.get('/stats', async (req, res) => {
   });
 });
 
-// Product CRUD (mirrored for admin convenience)
+// GET /api/admin/product-stats
+// Top products by units sold + order status breakdown
+router.get('/product-stats', async (req, res) => {
+  const [itemsRes, ordersRes] = await Promise.all([
+    supabase
+      .from('order_items')
+      .select('product_id, quantity, price, products(name)'),
+    supabase
+      .from('orders')
+      .select('status'),
+  ]);
+
+  if (itemsRes.error) return res.status(500).json({ error: itemsRes.error.message });
+
+  // Aggregate by product
+  const productMap = {};
+  for (const item of itemsRes.data || []) {
+    const name = item.products?.name || 'Unknown';
+    if (!productMap[name]) productMap[name] = { units: 0, revenue: 0 };
+    productMap[name].units += item.quantity || 0;
+    productMap[name].revenue += (item.quantity || 0) * parseFloat(item.price || 0);
+  }
+
+  const topProducts = Object.entries(productMap)
+    .sort(([, a], [, b]) => b.units - a.units)
+    .slice(0, 6)
+    .map(([name, data]) => ({ name: name.length > 14 ? name.slice(0, 14) + '…' : name, ...data }));
+
+  // Order status counts
+  const statusCounts = { pending: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 };
+  for (const o of ordersRes.data || []) {
+    if (statusCounts[o.status] !== undefined) statusCounts[o.status]++;
+  }
+
+  return res.json({ topProducts, statusCounts });
+});
+
+
 router.get('/products', async (req, res) => {
   const { data, error } = await supabase
     .from('products')
