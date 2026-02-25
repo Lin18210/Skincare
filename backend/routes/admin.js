@@ -41,12 +41,36 @@ router.get('/users', async (req, res) => {
 
 // GET /api/admin/revenue
 // ?period=day|month  (default: month)
+// Computed directly from orders — no DB views needed
 router.get('/revenue', async (req, res) => {
   const { period = 'month' } = req.query;
-  const view = period === 'day' ? 'revenue_by_day' : 'revenue_by_month';
-  const { data, error } = await supabase.from(view).select('*').limit(12);
+  const { data, error } = await supabase
+    .from('orders')
+    .select('created_at, total')
+    .neq('status', 'cancelled')
+    .order('created_at', { ascending: true });
+
   if (error) return res.status(500).json({ error: error.message });
-  return res.json(data);
+
+  // Group by month or day in JS
+  const grouped = {};
+  for (const order of data || []) {
+    const d = new Date(order.created_at);
+    const key = period === 'month'
+      ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+      : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    grouped[key] = (grouped[key] || 0) + parseFloat(order.total || 0);
+  }
+
+  const result = Object.entries(grouped)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-12)
+    .map(([key, rev]) => ({
+      [period === 'month' ? 'month' : 'day']: key,
+      revenue: rev.toFixed(2),
+    }));
+
+  return res.json(result);
 });
 
 // GET /api/admin/stats  (dashboard summary)
@@ -56,8 +80,15 @@ router.get('/stats', async (req, res) => {
     supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'user'),
     supabase.from('orders').select('total').neq('status', 'cancelled'),
   ]);
-  const totalRevenue = (revenueRes.data || []).reduce((s, o) => s + parseFloat(o.total), 0);
-  const todayOrders = (ordersRes.data || []).length; // simplified
+
+  if (revenueRes.error) console.error('Revenue stats error:', revenueRes.error.message);
+  if (ordersRes.error) console.error('Orders stats error:', ordersRes.error.message);
+  if (usersRes.error) console.error('Users stats error:', usersRes.error.message);
+
+  const totalRevenue = (revenueRes.data || []).reduce(
+    (s, o) => s + parseFloat(o.total || 0), 0
+  );
+
   return res.json({
     totalOrders: ordersRes.count || 0,
     totalUsers: usersRes.count || 0,
