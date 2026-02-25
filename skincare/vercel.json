@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://cutieskin-api.onrender.com/api/:path*"
+      "destination": "https://skincare-2jkc.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
