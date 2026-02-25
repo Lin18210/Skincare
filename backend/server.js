@@ -13,16 +13,18 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS — handle preflight + allow all origins (JWT used in headers, not cookies)
-const corsOptions = {
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-};
-// Must handle OPTIONS BEFORE any routes
-app.options('*', cors(corsOptions));
-app.use(cors(corsOptions));
+// ── CORS: manual headers first (runs before everything, even errors) ──────
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
+  if (req.method === 'OPTIONS') return res.sendStatus(200); // preflight done
+  next();
+});
+// cors package as backup
+app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE','OPTIONS','PATCH'], allowedHeaders: ['Content-Type','Authorization'] }));
 app.use(express.json());
+
 
 
 // Root route
