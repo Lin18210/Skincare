@@ -13,27 +13,15 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS — allow Vercel frontend, localhost dev, and Expo Go
-const allowedOrigins = [
-  'https://skincare-ruddy-rho.vercel.app',
-  'http://localhost:8081',
-  'http://localhost:8082',
-  'http://localhost:19006',
-  'exp://',
-];
-app.use(cors({
-  origin: (origin, callback) => {
-    // allow requests with no origin (mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.some(o => origin.startsWith(o))) return callback(null, true);
-    return callback(null, true); // allow all for now — tighten after testing
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
-// Respond to all OPTIONS preflight requests
-app.options('*', cors());
+// CORS — handle preflight + allow all origins (JWT used in headers, not cookies)
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
+// Must handle OPTIONS BEFORE any routes
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 
