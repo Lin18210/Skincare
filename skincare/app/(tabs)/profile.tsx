@@ -19,15 +19,16 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     if (Platform.OS === 'web') {
-      // Alert.alert button callbacks are ignored on web
       if (!window.confirm('Are you sure you want to logout?')) return;
       await logout();
-      router.replace('/login');
+      // Hard redirect is more reliable than router.replace on Vercel static exports
+      window.location.href = '/login';
       return;
     }
+    // Native: just logout — _layout.tsx watches user state and redirects automatically
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Logout', style: 'destructive', onPress: async () => { await logout(); router.replace('/login'); } },
+      { text: 'Logout', style: 'destructive', onPress: () => logout() },
     ]);
   };
 
