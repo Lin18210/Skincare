@@ -14,18 +14,21 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 /* ================================
-   ✅ PROPER CORS CONFIGURATION
+   CORS — works for web, native, local, and production
+   JWT is sent in Authorization header (not cookies) so
+   credentials mode is not required — origin: '*' is safe.
    ================================ */
 
-app.use(cors({
-  origin: "https://skincare-ruddy-rho.vercel.app", // your frontend URL
-  credentials: true, // allow cookies / auth headers
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
-// Important: handle preflight
-app.options('*', cors());
+// Preflight must be handled BEFORE any route
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
+
 
 app.use(express.json());
 
