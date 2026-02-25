@@ -16,23 +16,20 @@ const TAB_ICONS: Record<string, { icon: string; label: string }> = {
 };
 
 // ── Custom top navigation bar ──────────────────────────────
-function TopNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
+function TopNavBar({ navigation, state, descriptors }: any) {
   const { cartCount } = useCart();
   const statusBarH = Platform.OS === 'android' ? (StatusBar.currentHeight || 24) : 0;
 
-  const visibleRoutes = state.routes.filter(r => {
-    const opts = descriptors[r.key]?.options as any;
+  const visibleRoutes = state.routes.filter((r: any) => {
+    const opts = descriptors[r.key]?.options;
     return opts?.href !== null;
   });
 
   return (
     <View style={[styles.bar, { paddingTop: statusBarH + 8 }]}>
-      {/* Logo */}
       <Text style={styles.logo}>✨ CutieSkin</Text>
-
-      {/* Tabs */}
       <View style={styles.tabs}>
-        {visibleRoutes.map(route => {
+        {visibleRoutes.map((route: any) => {
           const isFocused = state.routes[state.index]?.name === route.name;
           const meta = TAB_ICONS[route.name];
           if (!meta) return null;
@@ -47,7 +44,7 @@ function TopNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
               <View>
                 <Ionicons
                   name={meta.icon as any}
-                  size={22}
+                  size={20}
                   color={isFocused ? '#C2185B' : '#AD7FA0'}
                 />
                 {route.name === 'cart' && cartCount > 0 && (
@@ -71,14 +68,16 @@ function TopNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
 export default function TabLayout() {
   return (
     <Tabs
-      tabBar={(props) => <TopNavBar {...props} />}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: true,
+        header: (props) => <TopNavBar {...props} />,
+        tabBarStyle: { display: 'none' }, // Completely hide the bottom bar
+      }}
     >
       <Tabs.Screen name="index" />
       <Tabs.Screen name="products" />
       <Tabs.Screen name="cart" />
       <Tabs.Screen name="profile" />
-      {/* Hide explore from tab bar */}
       <Tabs.Screen name="explore" options={{ href: null } as any} />
     </Tabs>
   );
