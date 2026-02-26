@@ -7,7 +7,7 @@ import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useCart } from '@/context/CartContext';
-import { getLocalImage } from '@/lib/images';
+import { getLocalImage, getLocalImageById } from '@/lib/images';
 
 const { width } = Dimensions.get('window');
 
@@ -62,8 +62,6 @@ export default function ProductDetailScreen() {
   if (loading) return <View style={styles.loader}><ActivityIndicator color="#1A1A1A" size="large" /></View>;
   if (!product) return <View style={styles.loader}><Text>Product not found</Text></View>;
 
-  const imageIdx = parseInt(itemIndex as string, 10) || 0;
-
   return (
     <SafeAreaView style={styles.container}>
       <Animated.ScrollView 
@@ -74,7 +72,7 @@ export default function ProductDetailScreen() {
         {/* Image Hub */}
         <View style={styles.imgContainer}>
           <Animated.Image 
-            source={getLocalImage(imageIdx)} 
+            source={getLocalImageById(product.id)} 
             style={[styles.img, { transform: [{ scale: imageScaleAnim }] }]} 
             resizeMode="cover" 
           />

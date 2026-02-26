@@ -6,6 +6,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '@/context/CartContext';
+import { getLocalImageById } from '@/lib/images';
 
 const SKIN_TYPE_LABEL: Record<string, { label: string; emoji: string; color: string }> = {
   oily:        { label: 'Oily Skin',        emoji: '💧', color: '#2196F3' },
@@ -173,7 +174,7 @@ export default function QuizResults() {
                     style={styles.productLeft}
                     onPress={() => router.push({ pathname: '/product/[id]', params: { id: product.id } })}
                   >
-                    <Image source={{ uri: product.image_url }} style={styles.productImg} resizeMode="cover" />
+                    <Image source={getLocalImageById(product.id)} style={styles.productImg} resizeMode="cover" />
                   </TouchableOpacity>
                   <View style={styles.productInfo}>
                     <View style={styles.productCatBadge}>

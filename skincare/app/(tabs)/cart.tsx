@@ -6,6 +6,7 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '@/context/CartContext';
+import { getLocalImageById } from '@/lib/images';
 
 export default function CartScreen() {
   const { cartItems, cartTotal, fetchCart, updateCartItem, removeFromCart } = useCart();
@@ -47,7 +48,7 @@ export default function CartScreen() {
         {/* Cart Items */}
         {cartItems.map(item => (
           <View key={item.id} style={styles.cartCard}>
-            <Image source={{ uri: item.products?.image_url }} style={styles.productImg} resizeMode="cover" />
+            <Image source={getLocalImageById(item.product_id)} style={styles.productImg} resizeMode="cover" />
             <View style={styles.cardInfo}>
               <Text style={styles.brand}>{item.products?.brand}</Text>
               <Text style={styles.name} numberOfLines={2}>{item.products?.name}</Text>

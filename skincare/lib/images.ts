@@ -23,3 +23,13 @@ export const LOCAL_IMAGES = [
 export const getLocalImage = (index: number) => {
   return LOCAL_IMAGES[index % LOCAL_IMAGES.length];
 };
+
+export const getLocalImageById = (id: string) => {
+  if (!id) return LOCAL_IMAGES[0];
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % LOCAL_IMAGES.length;
+  return LOCAL_IMAGES[index];
+};

@@ -132,15 +132,49 @@ export default function QuizScreen() {
   // Card entry animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
+  
+  // Infinite floating animation for the active question card
+  const floatAnim = useRef(new Animated.Value(0)).current;
+
+  // Staggered options animations (max 5 options in our questions)
+  const optionAnims = useRef(Array(5).fill(0).map(() => new Animated.Value(0))).current;
+  const optionSlideAnims = useRef(Array(5).fill(0).map(() => new Animated.Value(15))).current;
 
   const startAnim = useCallback(() => {
     fadeAnim.setValue(0);
-    slideAnim.setValue(20);
-    Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 450, useNativeDriver: true }),
+    slideAnim.setValue(30);
+    
+    optionAnims.forEach(anim => anim.setValue(0));
+    optionSlideAnims.forEach(anim => anim.setValue(20));
+
+    // Master Question Entry
+    const mainEntry = Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
       Animated.spring(slideAnim, { toValue: 0, tension: 50, friction: 8, useNativeDriver: true }),
-    ]).start();
-  }, [fadeAnim, slideAnim]);
+    ]);
+
+    // Staggered Options Entry
+    const staggerOptions = Animated.stagger(
+      30, // Faster delay between each option
+      optionAnims.map((anim, i) =>
+        Animated.parallel([
+          Animated.timing(optionAnims[i], { toValue: 1, duration: 200, useNativeDriver: true }),
+          Animated.spring(optionSlideAnims[i], { toValue: 0, tension: 60, friction: 7, useNativeDriver: true })
+        ])
+      )
+    );
+
+    Animated.sequence([mainEntry, staggerOptions]).start();
+
+    // Infinite Float
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, { toValue: -4, duration: 1500, useNativeDriver: true }),
+        Animated.timing(floatAnim, { toValue: 0, duration: 1500, useNativeDriver: true })
+      ])
+    ).start();
+
+  }, [fadeAnim, slideAnim, optionAnims, optionSlideAnims, floatAnim]);
 
   // Trigger animation on step change
   useEffect(() => {
@@ -247,30 +281,34 @@ export default function QuizScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }, { translateY: floatAnim }] }}>
           <Text style={styles.question}>{q.question}</Text>
           {q.subtitle && <Text style={styles.subtitle}>{q.subtitle}</Text>}
 
           <View style={styles.options}>
-            {q.options.map((opt) => {
+            {q.options.map((opt, index) => {
               const selected = answers[q.id] === opt.value;
+              const oFade = optionAnims[index] || new Animated.Value(1);
+              const oSlide = optionSlideAnims[index] || new Animated.Value(0);
+
               return (
-                <TouchableOpacity
-                  key={opt.value}
-                  style={[styles.option, selected && styles.optionSelected]}
-                  onPress={() => selectOption(opt.value)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{opt.label}</Text>
-                  {(opt as any).sub && (
-                    <Text style={[styles.optionSub, selected && styles.optionSubSelected]}>{(opt as any).sub}</Text>
-                  )}
-                  {selected && (
-                    <View style={styles.checkmark}>
-                      <Ionicons name="checkmark-circle" size={22} color="#B47B84" />
-                    </View>
-                  )}
-                </TouchableOpacity>
+                <Animated.View key={opt.value} style={{ opacity: oFade, transform: [{ translateY: oSlide }] }}>
+                  <TouchableOpacity
+                    style={[styles.option, selected && styles.optionSelected]}
+                    onPress={() => selectOption(opt.value)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{opt.label}</Text>
+                    {(opt as any).sub && (
+                      <Text style={[styles.optionSub, selected && styles.optionSubSelected]}>{(opt as any).sub}</Text>
+                    )}
+                    {selected && (
+                      <View style={styles.checkmark}>
+                        <Ionicons name="checkmark-circle" size={22} color="#B47B84" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                </Animated.View>
               );
             })}
           </View>

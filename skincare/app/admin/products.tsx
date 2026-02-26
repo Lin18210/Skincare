@@ -5,6 +5,7 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
+import { getLocalImageById } from '@/lib/images';
 
 export default function AdminProductsScreen() {
   const [products, setProducts] = useState<any[]>([]);
@@ -31,7 +32,7 @@ export default function AdminProductsScreen() {
 
   const renderProduct = ({ item }: { item: any }) => (
     <View style={styles.card}>
-      <Image source={{ uri: item.image_url }} style={styles.img} resizeMode="cover" />
+      <Image source={getLocalImageById(item.id)} style={styles.img} resizeMode="cover" />
       <View style={styles.info}>
         <Text style={styles.brand}>{item.brand}</Text>
         <Text style={styles.name} numberOfLines={2}>{item.name}</Text>

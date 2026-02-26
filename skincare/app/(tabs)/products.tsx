@@ -8,30 +8,58 @@ import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useCart } from '@/context/CartContext';
-import { getLocalImage } from '@/lib/images';
+import { getLocalImageById } from '@/lib/images';
 
 const CATEGORY_ALL = 'All';
 
 // Animated Card Component for a professional feel
 function ProductCard({ item, index, isInCart, adding, handleAdd, cardWidth }: any) {
   const scale = useRef(new Animated.Value(1)).current;
+  const pressTranslateY = useRef(new Animated.Value(0)).current;
+
+  // Staggered Entrance Animation
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(40)).current;
+
+  useEffect(() => {
+    // Delay entry based on index to create a wave effect
+    const delay = index * 80;
+    
+    // reset explicitly if re-rendered
+    fadeAnim.setValue(0);
+    slideAnim.setValue(40);
+
+    Animated.sequence([
+      Animated.delay(delay),
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 450, useNativeDriver: true }),
+        Animated.spring(slideAnim, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true })
+      ])
+    ]).start();
+  }, [index, fadeAnim, slideAnim]);
 
   const handlePressIn = () => {
-    Animated.spring(scale, { toValue: 0.95, useNativeDriver: true }).start();
+    Animated.parallel([
+      Animated.spring(scale, { toValue: 1.02, useNativeDriver: true }), // Lift up slightly
+      Animated.spring(pressTranslateY, { toValue: -4, useNativeDriver: true }) // Float up
+    ]).start();
   };
   const handlePressOut = () => {
-    Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
+    Animated.parallel([
+      Animated.spring(scale, { toValue: 1, useNativeDriver: true }), 
+      Animated.spring(pressTranslateY, { toValue: 0, useNativeDriver: true })
+    ]).start();
   };
 
   return (
-    <Animated.View style={[styles.card, { width: cardWidth, transform: [{ scale }] }]}>
+    <Animated.View style={[styles.card, { width: cardWidth, opacity: fadeAnim, transform: [{ scale }, { translateY: slideAnim }, { translateY: pressTranslateY }] }]}>
       <TouchableOpacity
         activeOpacity={1}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id, itemIndex: index } })}
+        onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
       >
-        <Image source={getLocalImage(index)} style={styles.productImg} resizeMode="cover" />
+        <Image source={getLocalImageById(item.id)} style={styles.productImg} resizeMode="cover" />
         <View style={styles.cardBadge}>
           <Text style={styles.cardBadgeText}>{item.categories?.icon} {item.categories?.name}</Text>
         </View>
@@ -71,26 +99,14 @@ export default function ProductsScreen() {
   const paddingHorizontal = 16;
   const cardWidth = (width - (paddingHorizontal * 2) - ((numColumns - 1) * cardGap)) / numColumns;
 
-  // Entrance animation for list
-  const listOpacity = useRef(new Animated.Value(0)).current;
-  const listTranslateY = useRef(new Animated.Value(20)).current;
-
-  const animateList = useCallback(() => {
-    listOpacity.setValue(0);
-    listTranslateY.setValue(20);
-    Animated.parallel([
-      Animated.timing(listOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.spring(listTranslateY, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true })
-    ]).start();
-  }, [listOpacity, listTranslateY]);
-
+  // We manage refetching state independently now
   useFocusEffect(
     useCallback(() => {
-      // Re-trigger animation on returning to the tab
       if (!loading && products.length > 0) {
-        animateList();
+        // FlatList keys update would remount cards and trigger animations,
+        // but it's smoother to just let them animate on first mount.
       }
-    }, [animateList, loading, products.length])
+    }, [loading, products.length])
   );
 
   useEffect(() => {
@@ -99,8 +115,6 @@ export default function ProductsScreen() {
 
   const loadData = async () => {
     setLoading(true);
-    listOpacity.setValue(0);
-    listTranslateY.setValue(20);
     try {
       const [prodRes, catRes] = await Promise.all([
         api.get('/api/products'),
@@ -116,7 +130,6 @@ export default function ProductsScreen() {
 
       setProducts(Array.from(productMap.values()));
       setCategories(catRes.data);
-      animateList();
       
     } catch { Alert.alert('Error', 'Failed to load products.'); }
     finally { setLoading(false); }
@@ -192,9 +205,11 @@ export default function ProductsScreen() {
       {loading ? (
         <View style={styles.loader}><ActivityIndicator color="#1A1A1A" size="large" /></View>
       ) : (
-        <Animated.View style={{ flex: 1, opacity: listOpacity, transform: [{ translateY: listTranslateY }] }}>
+        <View style={{ flex: 1 }}>
           <FlatList
-            key={numColumns}
+            // Passing a new key forces the FlatList to completely unmount and remount items,
+            // resetting the internal Animated components inside ProductCard to re-trigger staggered entrance.
+            key={`list-${numColumns}-${search}-${selectedCategory}`}
             data={filtered}
             renderItem={renderProduct}
             keyExtractor={item => item.id}
@@ -209,7 +224,7 @@ export default function ProductsScreen() {
               </View>
             }
           />
-        </Animated.View>
+        </View>
       )}
     </SafeAreaView>
   );

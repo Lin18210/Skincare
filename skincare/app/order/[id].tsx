@@ -5,6 +5,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
+import { getLocalImageById } from '@/lib/images';
 
 export default function OrderDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -41,7 +42,7 @@ export default function OrderDetailScreen() {
           <Text style={styles.cardTitle}>Items Ordered</Text>
           {order.order_items?.map((item: any) => (
             <View key={item.id} style={styles.itemRow}>
-              <Image source={{ uri: item.product_image }} style={styles.itemImg} />
+              <Image source={getLocalImageById(item.product_id || item.product_name)} style={styles.itemImg} />
               <View style={styles.itemInfo}>
                 <Text style={styles.itemName}>{item.product_name}</Text>
                 <Text style={styles.itemQty}>Qty: {item.quantity}</Text>
