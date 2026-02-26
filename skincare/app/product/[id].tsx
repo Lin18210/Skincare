@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Image, TouchableOpacity,
   SafeAreaView, ActivityIndicator, Alert, Animated, Dimensions
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useCart } from '@/context/CartContext';
@@ -24,16 +24,31 @@ export default function ProductDetailScreen() {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const imageScaleAnim = useRef(new Animated.Value(1.05)).current;
 
+  const animateEntrance = useCallback(() => {
+    fadeAnim.setValue(0);
+    slideAnim.setValue(30);
+    imageScaleAnim.setValue(1.05);
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true }),
+      Animated.timing(imageScaleAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
+    ]).start();
+  }, [fadeAnim, slideAnim, imageScaleAnim]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!loading && product) {
+        animateEntrance();
+      }
+    }, [animateEntrance, loading, product])
+  );
+
   useEffect(() => {
     api.get(`/api/products/${id}`).then(r => {
       setProduct(r.data);
-      Animated.parallel([
-        Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
-        Animated.spring(slideAnim, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true }),
-        Animated.timing(imageScaleAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
-      ]).start();
+      animateEntrance();
     }).finally(() => setLoading(false));
-  }, [id]);
+  }, [id, animateEntrance]);
 
   const handleAdd = async () => {
     setAdding(true);
@@ -157,52 +172,52 @@ export default function ProductDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FAF9F8' },
+  container: { flex: 1, backgroundColor: '#FCF8F8' }, // Rosy white
   scrollContent: { maxWidth: 800, alignSelf: 'center', width: '100%', paddingBottom: 40 },
-  loader: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FAF9F8' },
+  loader: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FCF8F8' },
   
-  imgContainer: { position: 'relative', overflow: 'hidden', borderBottomLeftRadius: 32, borderBottomRightRadius: 32, backgroundColor: '#fff', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 20, elevation: 5 },
-  img: { width: '100%', height: width > 600 ? 550 : 450, backgroundColor: '#F0F0F0' },
+  imgContainer: { position: 'relative', overflow: 'hidden', borderBottomLeftRadius: 32, borderBottomRightRadius: 32, backgroundColor: '#fff', shadowColor: '#B47B84', shadowOpacity: 0.05, shadowRadius: 20, elevation: 5 },
+  img: { width: '100%', height: width > 600 ? 550 : 450, backgroundColor: '#FCF8F8' },
   
-  backBtn: { position: 'absolute', top: 16, left: 16, width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10, elevation: 4 },
+  backBtn: { position: 'absolute', top: 16, left: 16, width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center', shadowColor: '#B47B84', shadowOpacity: 0.1, shadowRadius: 10, elevation: 4 },
   
-  catBadge: { position: 'absolute', bottom: 20, left: 20, backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 16, paddingHorizontal: 16, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, elevation: 2 },
-  catBadgeText: { fontSize: 13, fontWeight: '700', color: '#1A1A1A', letterSpacing: 0.5 },
+  catBadge: { position: 'absolute', bottom: 20, left: 20, backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 16, paddingHorizontal: 16, paddingVertical: 8, shadowColor: '#B47B84', shadowOpacity: 0.1, shadowRadius: 8, elevation: 2 },
+  catBadgeText: { fontSize: 13, fontWeight: '700', color: '#B47B84', letterSpacing: 0.5 },
   
   info: { padding: 24 },
-  brand: { fontSize: 12, color: '#666', fontWeight: '800', textTransform: 'uppercase', letterSpacing: 2 },
-  name: { fontSize: 28, fontWeight: '800', color: '#1A1A1A', marginTop: 8, lineHeight: 36, letterSpacing: -0.5 },
+  brand: { fontSize: 12, color: '#A06D74', fontWeight: '800', textTransform: 'uppercase', letterSpacing: 2 },
+  name: { fontSize: 28, fontWeight: '800', color: '#3A3435', marginTop: 8, lineHeight: 36, letterSpacing: -0.5 },
   
   priceRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, marginBottom: 24 },
-  price: { fontSize: 32, fontWeight: '800', color: '#1A1A1A' },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: '#F0F0F0' },
-  rating: { fontSize: 15, color: '#1A1A1A', fontWeight: '700' },
+  price: { fontSize: 32, fontWeight: '800', color: '#3A3435' },
+  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: '#F2E6E8' },
+  rating: { fontSize: 15, color: '#3A3435', fontWeight: '700' },
   
   tagSection: { marginBottom: 20 },
-  tagLabel: { fontSize: 13, fontWeight: '700', color: '#999', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 },
+  tagLabel: { fontSize: 13, fontWeight: '700', color: '#B47B84', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  tag: { backgroundColor: '#fff', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: '#E5E5E5' },
-  tagConcern: { backgroundColor: '#1A1A1A', borderColor: '#1A1A1A' },
-  tagText: { fontSize: 13, color: '#1A1A1A', fontWeight: '600' },
+  tag: { backgroundColor: '#fff', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: '#F2E6E8' },
+  tagConcern: { backgroundColor: '#B47B84', borderColor: '#B47B84' },
+  tagText: { fontSize: 13, color: '#3A3435', fontWeight: '600' },
   tagTextConcern: { fontSize: 13, color: '#fff', fontWeight: '600' },
   
-  divider: { height: 1, backgroundColor: '#EAEAEA', marginVertical: 24 },
+  divider: { height: 1, backgroundColor: '#F2E6E8', marginVertical: 24 },
   
   section: { marginBottom: 32 },
-  sectionTitle: { fontSize: 20, fontWeight: '800', color: '#1A1A1A', marginBottom: 12, letterSpacing: -0.3 },
-  sectionText: { fontSize: 16, color: '#555', lineHeight: 26 },
+  sectionTitle: { fontSize: 20, fontWeight: '800', color: '#3A3435', marginBottom: 12, letterSpacing: -0.3 },
+  sectionText: { fontSize: 16, color: '#8A8082', lineHeight: 26 },
   
   footer: {
-    backgroundColor: 'rgba(255,255,255,0.95)', borderTopWidth: 1, borderTopColor: '#F0F0F0',
+    backgroundColor: 'rgba(255,255,255,0.95)', borderTopWidth: 1, borderTopColor: '#F2E6E8',
   },
   footerInner: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 24, paddingVertical: 20, maxWidth: 800, alignSelf: 'center', width: '100%'
   },
-  footerLabel: { fontSize: 12, color: '#999', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
-  footerPrice: { fontSize: 26, fontWeight: '800', color: '#1A1A1A', marginTop: 2 },
+  footerLabel: { fontSize: 12, color: '#8A8082', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
+  footerPrice: { fontSize: 26, fontWeight: '800', color: '#3A3435', marginTop: 2 },
   
-  addBtn: { backgroundColor: '#1A1A1A', borderRadius: 20, paddingHorizontal: 36, paddingVertical: 18, shadowColor: '#1A1A1A', shadowOpacity: 0.25, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 8 },
+  addBtn: { backgroundColor: '#B47B84', borderRadius: 20, paddingHorizontal: 36, paddingVertical: 18, shadowColor: '#B47B84', shadowOpacity: 0.25, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 8 },
   addBtnAdded: { backgroundColor: '#2E7D32' },
   addBtnText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: 0.5 },
 });

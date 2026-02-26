@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   Animated, Alert, ActivityIndicator, SafeAreaView,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
@@ -129,6 +129,31 @@ export default function QuizScreen() {
   const [loading, setLoading] = useState(false);
   const progressAnim = useRef(new Animated.Value(0)).current;
 
+  // Card entry animations
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
+
+  const startAnim = useCallback(() => {
+    fadeAnim.setValue(0);
+    slideAnim.setValue(20);
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 450, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, tension: 50, friction: 8, useNativeDriver: true }),
+    ]).start();
+  }, [fadeAnim, slideAnim]);
+
+  // Trigger animation on step change
+  useEffect(() => {
+    startAnim();
+  }, [step, startAnim]);
+
+  // Trigger animation on tab focus
+  useFocusEffect(
+    useCallback(() => {
+      startAnim();
+    }, [startAnim])
+  );
+
   const q = QUESTIONS[step];
   const totalSteps = QUESTIONS.length;
   const progress = ((step) / totalSteps) * 100;
@@ -222,61 +247,63 @@ export default function QuizScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.question}>{q.question}</Text>
-        {q.subtitle && <Text style={styles.subtitle}>{q.subtitle}</Text>}
+        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+          <Text style={styles.question}>{q.question}</Text>
+          {q.subtitle && <Text style={styles.subtitle}>{q.subtitle}</Text>}
 
-        <View style={styles.options}>
-          {q.options.map((opt) => {
-            const selected = answers[q.id] === opt.value;
-            return (
-              <TouchableOpacity
-                key={opt.value}
-                style={[styles.option, selected && styles.optionSelected]}
-                onPress={() => selectOption(opt.value)}
-                activeOpacity={0.7}
-              >
-                <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{opt.label}</Text>
-                {(opt as any).sub && (
-                  <Text style={[styles.optionSub, selected && styles.optionSubSelected]}>{(opt as any).sub}</Text>
-                )}
-                {selected && (
-                  <View style={styles.checkmark}>
-                    <Ionicons name="checkmark-circle" size={22} color="#1A1A1A" />
-                  </View>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+          <View style={styles.options}>
+            {q.options.map((opt) => {
+              const selected = answers[q.id] === opt.value;
+              return (
+                <TouchableOpacity
+                  key={opt.value}
+                  style={[styles.option, selected && styles.optionSelected]}
+                  onPress={() => selectOption(opt.value)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{opt.label}</Text>
+                  {(opt as any).sub && (
+                    <Text style={[styles.optionSub, selected && styles.optionSubSelected]}>{(opt as any).sub}</Text>
+                  )}
+                  {selected && (
+                    <View style={styles.checkmark}>
+                      <Ionicons name="checkmark-circle" size={22} color="#B47B84" />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9F9F9' },
+  container: { flex: 1, backgroundColor: '#FCF8F8' }, // Soft rosy white
   header: { paddingHorizontal: 20, paddingTop: 16 },
   headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
-  stepText: { fontSize: 14, fontWeight: '600', color: '#666666' },
-  progressTrack: { height: 6, backgroundColor: '#EAEAEA', borderRadius: 3 },
-  progressBar: { height: 6, backgroundColor: '#1A1A1A', borderRadius: 3 },
+  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F2E6E8', alignItems: 'center', justifyContent: 'center' },
+  stepText: { fontSize: 14, fontWeight: '700', color: '#B47B84', letterSpacing: 1 },
+  progressTrack: { height: 6, backgroundColor: '#F2E6E8', borderRadius: 3 },
+  progressBar: { height: 6, backgroundColor: '#B47B84', borderRadius: 3 }, // Dusty rose
   content: { padding: 24, paddingBottom: 60 },
-  question: { fontSize: 22, fontWeight: '800', color: '#2D2D2D', marginTop: 8, lineHeight: 32 },
-  subtitle: { fontSize: 14, color: '#666666', marginTop: 6, marginBottom: 28 },
-  options: { gap: 12 },
+  question: { fontSize: 24, fontWeight: '800', color: '#3A3435', marginTop: 8, lineHeight: 34, letterSpacing: -0.5 },
+  subtitle: { fontSize: 14, color: '#8A8082', marginTop: 6, marginBottom: 28 },
+  options: { gap: 14 },
   option: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 18, borderWidth: 2, borderColor: '#EAEAEA',
+    backgroundColor: '#fff', borderRadius: 16, padding: 18, borderWidth: 2, borderColor: '#F2E6E8',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    shadowColor: '#1A1A1A', shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
+    shadowColor: '#B47B84', shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
   },
-  optionSelected: { borderColor: '#1A1A1A', backgroundColor: '#F9F9F9' },
-  optionLabel: { fontSize: 16, color: '#333', fontWeight: '600', flex: 1 },
-  optionLabelSelected: { color: '#1A1A1A' },
-  optionSub: { fontSize: 12, color: '#999', marginTop: 2 },
-  optionSubSelected: { color: '#333333' },
+  optionSelected: { borderColor: '#B47B84', backgroundColor: '#FFF5F6' },
+  optionLabel: { fontSize: 16, color: '#3A3435', fontWeight: '600', flex: 1 },
+  optionLabelSelected: { color: '#B47B84', fontWeight: '700' },
+  optionSub: { fontSize: 12, color: '#8A8082', marginTop: 3 },
+  optionSubSelected: { color: '#A06D74' },
   checkmark: { marginLeft: 8 },
-  loadingContainer: { flex: 1, backgroundColor: '#F9F9F9', alignItems: 'center', justifyContent: 'center' },
+  loadingContainer: { flex: 1, backgroundColor: '#FCF8F8', alignItems: 'center', justifyContent: 'center' },
   loadingEmoji: { fontSize: 60 },
-  loadingText: { fontSize: 18, color: '#1A1A1A', fontWeight: '700', marginTop: 16 },
+  loadingText: { fontSize: 18, color: '#B47B84', fontWeight: '700', marginTop: 16 },
 });

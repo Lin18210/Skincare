@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Image, TouchableOpacity,
   TextInput, FlatList, ActivityIndicator, SafeAreaView, Alert,
   useWindowDimensions, Animated
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useCart } from '@/context/CartContext';
@@ -46,8 +46,8 @@ function ProductCard({ item, index, isInCart, adding, handleAdd, cardWidth }: an
               disabled={adding === item.id}
             >
               {adding === item.id
-                ? <ActivityIndicator size="small" color="#1A1A1A" />
-                : <Ionicons name={isInCart(item.id) ? 'checkmark' : 'add'} size={18} color="#1A1A1A" />}
+                ? <ActivityIndicator size="small" color="#fff" />
+                : <Ionicons name={isInCart(item.id) ? 'checkmark' : 'add'} size={18} color="#fff" />}
             </TouchableOpacity>
           </View>
         </View>
@@ -75,6 +75,24 @@ export default function ProductsScreen() {
   const listOpacity = useRef(new Animated.Value(0)).current;
   const listTranslateY = useRef(new Animated.Value(20)).current;
 
+  const animateList = useCallback(() => {
+    listOpacity.setValue(0);
+    listTranslateY.setValue(20);
+    Animated.parallel([
+      Animated.timing(listOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+      Animated.spring(listTranslateY, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true })
+    ]).start();
+  }, [listOpacity, listTranslateY]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Re-trigger animation on returning to the tab
+      if (!loading && products.length > 0) {
+        animateList();
+      }
+    }, [animateList, loading, products.length])
+  );
+
   useEffect(() => {
     loadData();
   }, []);
@@ -98,11 +116,7 @@ export default function ProductsScreen() {
 
       setProducts(Array.from(productMap.values()));
       setCategories(catRes.data);
-      
-      Animated.parallel([
-        Animated.timing(listOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-        Animated.spring(listTranslateY, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true })
-      ]).start();
+      animateList();
       
     } catch { Alert.alert('Error', 'Failed to load products.'); }
     finally { setLoading(false); }
@@ -202,44 +216,44 @@ export default function ProductsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FAF9F8' },
+  container: { flex: 1, backgroundColor: '#FCF8F8' }, // Rosy white
   header: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
-  title: { fontSize: 28, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.5 },
-  count: { fontSize: 13, color: '#666666', fontWeight: '500' },
+  title: { fontSize: 28, fontWeight: '800', color: '#B47B84', letterSpacing: -0.5 }, // Dusty Rose Title
+  count: { fontSize: 13, color: '#8A8082', fontWeight: '500' },
   searchBar: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#fff', marginHorizontal: 20, borderRadius: 12, padding: 14,
-    borderWidth: 1, borderColor: '#E5E5E5',
-    shadowColor: '#000', shadowOpacity: 0.02, shadowRadius: 8, elevation: 1,
+    borderWidth: 1, borderColor: '#F2E6E8',
+    shadowColor: '#B47B84', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2,
   },
-  searchInput: { flex: 1, fontSize: 15, color: '#1A1A1A' },
+  searchInput: { flex: 1, fontSize: 15, color: '#3A3435' },
   categoryRow: { paddingHorizontal: 20, paddingVertical: 18, gap: 10 },
   catChip: {
     paddingHorizontal: 16, paddingVertical: 10, borderRadius: 24,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#E5E5E5',
+    backgroundColor: '#fff', borderWidth: 1, borderColor: '#F2E6E8',
   },
-  catChipActive: { backgroundColor: '#1A1A1A', borderColor: '#1A1A1A' },
-  catChipText: { fontSize: 13, color: '#666666', fontWeight: '600', letterSpacing: 0.3 },
+  catChipActive: { backgroundColor: '#B47B84', borderColor: '#B47B84' },
+  catChipText: { fontSize: 13, color: '#8A8082', fontWeight: '600', letterSpacing: 0.3 },
   catChipTextActive: { color: '#fff' },
   loader: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   grid: { paddingHorizontal: 16, paddingBottom: 40 },
   row: { justifyContent: 'space-between' },
   card: {
     backgroundColor: '#fff', borderRadius: 16, marginBottom: 16,
-    overflow: 'hidden', borderWidth: 1, borderColor: '#F0F0F0',
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 3,
+    overflow: 'hidden', borderWidth: 1, borderColor: '#F2E6E8',
+    shadowColor: '#B47B84', shadowOpacity: 0.05, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 3,
   },
-  productImg: { width: '100%', height: 220, backgroundColor: '#F9F9F9' },
+  productImg: { width: '100%', height: 220, backgroundColor: '#FCF8F8' },
   cardBadge: { position: 'absolute', top: 12, left: 12, backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
-  cardBadgeText: { fontSize: 10, fontWeight: '700', color: '#1A1A1A', letterSpacing: 0.5 },
+  cardBadgeText: { fontSize: 10, fontWeight: '700', color: '#B47B84', letterSpacing: 0.5 },
   cardInfo: { padding: 16 },
-  brand: { fontSize: 11, color: '#999', fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.2 },
-  name: { fontSize: 15, fontWeight: '700', color: '#1A1A1A', marginVertical: 6, lineHeight: 20 },
+  brand: { fontSize: 11, color: '#A06D74', fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.2 },
+  name: { fontSize: 15, fontWeight: '700', color: '#3A3435', marginVertical: 6, lineHeight: 20 },
   cardBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
-  price: { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
-  addBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F5F5F5', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#EEEEEE' },
-  addBtnIn: { backgroundColor: '#E8F5E9', borderColor: '#C8E6C9' },
+  price: { fontSize: 18, fontWeight: '700', color: '#3A3435' },
+  addBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#B47B84', alignItems: 'center', justifyContent: 'center', shadowColor: '#B47B84', shadowOpacity: 0.2, shadowRadius: 6, elevation: 4 }, // Rose add button
+  addBtnIn: { backgroundColor: '#A06D74' }, // Darker rose for active
   empty: { alignItems: 'center', marginTop: 60 },
   emptyEmoji: { fontSize: 50 },
-  emptyText: { fontSize: 16, color: '#666666', marginTop: 12, fontWeight: '500' },
+  emptyText: { fontSize: 16, color: '#8A8082', marginTop: 12, fontWeight: '500' },
 });
