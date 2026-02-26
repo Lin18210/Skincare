@@ -8,24 +8,16 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useCart } from '@/context/CartContext';
+import { getLocalImage } from '@/lib/images';
 
 const CATEGORY_ALL = 'All';
 
-// Convert possible relative backend URL to full URL
-const getImageUrl = (url: string) => {
-  if (!url) return 'https://via.placeholder.com/150';
-  if (url.startsWith('/')) {
-    return `${api.defaults.baseURL}${url}`;
-  }
-  return url;
-};
-
 // Animated Card Component for a professional feel
-function ProductCard({ item, isInCart, adding, handleAdd, cardWidth }: any) {
+function ProductCard({ item, index, isInCart, adding, handleAdd, cardWidth }: any) {
   const scale = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
-    Animated.spring(scale, { toValue: 0.96, useNativeDriver: true }).start();
+    Animated.spring(scale, { toValue: 0.95, useNativeDriver: true }).start();
   };
   const handlePressOut = () => {
     Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
@@ -37,14 +29,14 @@ function ProductCard({ item, isInCart, adding, handleAdd, cardWidth }: any) {
         activeOpacity={1}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
+        onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id, itemIndex: index } })}
       >
-        <Image source={{ uri: getImageUrl(item.image_url) }} style={styles.productImg} resizeMode="cover" />
+        <Image source={getLocalImage(index)} style={styles.productImg} resizeMode="cover" />
         <View style={styles.cardBadge}>
           <Text style={styles.cardBadgeText}>{item.categories?.icon} {item.categories?.name}</Text>
         </View>
         <View style={styles.cardInfo}>
-          <Text style={styles.brand} numberOfLines={1}>{item.brand}</Text>
+          <Text style={styles.brand} numberOfLines={1}>{item.brand || 'ESSENTIALS'}</Text>
           <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
           <View style={styles.cardBottom}>
             <Text style={styles.price}>${item.price?.toFixed(2)}</Text>
@@ -54,8 +46,8 @@ function ProductCard({ item, isInCart, adding, handleAdd, cardWidth }: any) {
               disabled={adding === item.id}
             >
               {adding === item.id
-                ? <ActivityIndicator size="small" color="#fff" />
-                : <Ionicons name={isInCart(item.id) ? 'checkmark' : 'add'} size={18} color="#fff" />}
+                ? <ActivityIndicator size="small" color="#1A1A1A" />
+                : <Ionicons name={isInCart(item.id) ? 'checkmark' : 'add'} size={18} color="#1A1A1A" />}
             </TouchableOpacity>
           </View>
         </View>
@@ -75,8 +67,8 @@ export default function ProductsScreen() {
   const { width } = useWindowDimensions();
 
   const numColumns = width >= 1024 ? 4 : width >= 768 ? 3 : 2;
-  const cardGap = 14;
-  const paddingHorizontal = 12;
+  const cardGap = 16;
+  const paddingHorizontal = 16;
   const cardWidth = (width - (paddingHorizontal * 2) - ((numColumns - 1) * cardGap)) / numColumns;
 
   // Entrance animation for list
@@ -99,8 +91,7 @@ export default function ProductsScreen() {
 
       const productMap = new Map();
       prodRes.data.forEach((p: any) => {
-        const existing = productMap.get(p.name);
-        if (!existing || (p.image_url && !existing.image_url)) {
+        if (!productMap.has(p.name)) {
           productMap.set(p.name, p);
         }
       });
@@ -109,8 +100,8 @@ export default function ProductsScreen() {
       setCategories(catRes.data);
       
       Animated.parallel([
-        Animated.timing(listOpacity, { toValue: 1, duration: 450, useNativeDriver: true }),
-        Animated.spring(listTranslateY, { toValue: 0, tension: 50, friction: 8, useNativeDriver: true })
+        Animated.timing(listOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.spring(listTranslateY, { toValue: 0, tension: 40, friction: 8, useNativeDriver: true })
       ]).start();
       
     } catch { Alert.alert('Error', 'Failed to load products.'); }
@@ -131,9 +122,10 @@ export default function ProductsScreen() {
 
   const isInCart = (id: string) => cartItems.some(i => i.product_id === id);
 
-  const renderProduct = ({ item }: { item: any }) => (
+  const renderProduct = ({ item, index }: { item: any, index: number }) => (
     <ProductCard 
       item={item} 
+      index={index}
       isInCart={isInCart} 
       adding={adding} 
       handleAdd={handleAdd} 
@@ -145,7 +137,7 @@ export default function ProductsScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Skincare Shop</Text>
+        <Text style={styles.title}>Collection</Text>
         <Text style={styles.count}>{filtered.length} products</Text>
       </View>
 
@@ -154,7 +146,7 @@ export default function ProductsScreen() {
         <Ionicons name="search" size={18} color="#666666" style={{ marginRight: 8 }} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search products or brands..."
+          placeholder="Search minimalist routines..."
           placeholderTextColor="#999999"
           value={search}
           onChangeText={setSearch}
@@ -176,7 +168,7 @@ export default function ProductsScreen() {
               onPress={() => setSelectedCategory(cat)}
             >
               <Text style={[styles.catChipText, selectedCategory === cat && styles.catChipTextActive]}>
-                {cat === CATEGORY_ALL ? '🌸 All' : `${categories.find(c => c.name === cat)?.icon || ''} ${cat}`}
+                {cat === CATEGORY_ALL ? '✨ All' : `${categories.find(c => c.name === cat)?.icon || ''} ${cat}`}
               </Text>
             </TouchableOpacity>
           ))}
@@ -193,7 +185,7 @@ export default function ProductsScreen() {
             renderItem={renderProduct}
             keyExtractor={item => item.id}
             numColumns={numColumns}
-            columnWrapperStyle={styles.row}
+            columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
             contentContainerStyle={styles.grid}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
@@ -210,44 +202,44 @@ export default function ProductsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9F9F9' },
+  container: { flex: 1, backgroundColor: '#FAF9F8' },
   header: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
-  title: { fontSize: 24, fontWeight: '800', color: '#2D2D2D' },
-  count: { fontSize: 13, color: '#666666', fontWeight: '600' },
+  title: { fontSize: 28, fontWeight: '800', color: '#1A1A1A', letterSpacing: -0.5 },
+  count: { fontSize: 13, color: '#666666', fontWeight: '500' },
   searchBar: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', marginHorizontal: 20, borderRadius: 14, padding: 12,
-    borderWidth: 1.5, borderColor: '#EAEAEA',
-    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 6, elevation: 2,
+    backgroundColor: '#fff', marginHorizontal: 20, borderRadius: 12, padding: 14,
+    borderWidth: 1, borderColor: '#E5E5E5',
+    shadowColor: '#000', shadowOpacity: 0.02, shadowRadius: 8, elevation: 1,
   },
-  searchInput: { flex: 1, fontSize: 15, color: '#333' },
-  categoryRow: { paddingHorizontal: 20, paddingVertical: 14, gap: 8 },
+  searchInput: { flex: 1, fontSize: 15, color: '#1A1A1A' },
+  categoryRow: { paddingHorizontal: 20, paddingVertical: 18, gap: 10 },
   catChip: {
-    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
-    backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EAEAEA',
+    paddingHorizontal: 16, paddingVertical: 10, borderRadius: 24,
+    backgroundColor: '#fff', borderWidth: 1, borderColor: '#E5E5E5',
   },
   catChipActive: { backgroundColor: '#1A1A1A', borderColor: '#1A1A1A' },
-  catChipText: { fontSize: 13, color: '#666666', fontWeight: '600' },
+  catChipText: { fontSize: 13, color: '#666666', fontWeight: '600', letterSpacing: 0.3 },
   catChipTextActive: { color: '#fff' },
   loader: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  grid: { paddingHorizontal: 12, paddingBottom: 40 },
+  grid: { paddingHorizontal: 16, paddingBottom: 40 },
   row: { justifyContent: 'space-between' },
   card: {
-    width: '48%', backgroundColor: '#fff', borderRadius: 18, marginBottom: 14,
-    overflow: 'hidden', borderWidth: 1.5, borderColor: '#EAEAEA',
-    shadowColor: '#1A1A1A', shadowOpacity: 0.08, shadowRadius: 8, elevation: 4,
+    backgroundColor: '#fff', borderRadius: 16, marginBottom: 16,
+    overflow: 'hidden', borderWidth: 1, borderColor: '#F0F0F0',
+    shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 3,
   },
-  productImg: { width: '100%', height: 150 },
-  cardBadge: { position: 'absolute', top: 8, left: 8, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 },
-  cardBadgeText: { fontSize: 10, fontWeight: '700', color: '#1A1A1A' },
-  cardInfo: { padding: 12 },
-  brand: { fontSize: 10, color: '#999', fontWeight: '700', textTransform: 'uppercase' },
-  name: { fontSize: 13, fontWeight: '700', color: '#333', marginVertical: 4, lineHeight: 18 },
-  cardBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
-  price: { fontSize: 16, fontWeight: '800', color: '#1A1A1A' },
-  addBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#1A1A1A', alignItems: 'center', justifyContent: 'center', shadowColor: '#1A1A1A', shadowOpacity: 0.3, shadowRadius: 6, elevation: 4 },
-  addBtnIn: { backgroundColor: '#4CAF50' },
+  productImg: { width: '100%', height: 220, backgroundColor: '#F9F9F9' },
+  cardBadge: { position: 'absolute', top: 12, left: 12, backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  cardBadgeText: { fontSize: 10, fontWeight: '700', color: '#1A1A1A', letterSpacing: 0.5 },
+  cardInfo: { padding: 16 },
+  brand: { fontSize: 11, color: '#999', fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.2 },
+  name: { fontSize: 15, fontWeight: '700', color: '#1A1A1A', marginVertical: 6, lineHeight: 20 },
+  cardBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
+  price: { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
+  addBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F5F5F5', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#EEEEEE' },
+  addBtnIn: { backgroundColor: '#E8F5E9', borderColor: '#C8E6C9' },
   empty: { alignItems: 'center', marginTop: 60 },
   emptyEmoji: { fontSize: 50 },
-  emptyText: { fontSize: 16, color: '#666666', marginTop: 12, fontWeight: '600' },
+  emptyText: { fontSize: 16, color: '#666666', marginTop: 12, fontWeight: '500' },
 });
