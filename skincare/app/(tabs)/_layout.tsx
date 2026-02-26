@@ -33,7 +33,7 @@ function TabItem({ tab, isFocused, cartCount, onPress, isMobile }: any) {
         <Ionicons
           name={tab.icon as any}
           size={isMobile ? 24 : 26}
-          color={isFocused ? '#C2185B' : isHovered && Platform.OS === 'web' ? '#D81B60' : '#AD7FA0'}
+          color={isFocused ? '#1A1A1A' : isHovered && Platform.OS === 'web' ? '#333333' : '#666666'}
         />
         {tab.id === 'cart' && cartCount > 0 && (
           <View style={[styles.badge, isMobile && { top: -4, right: -6 }]}>
@@ -44,7 +44,7 @@ function TabItem({ tab, isFocused, cartCount, onPress, isMobile }: any) {
       <Text style={[
         isMobile ? styles.mobileTabLabel : styles.tabLabel, 
         isFocused && styles.tabLabelActive,
-        isHovered && !isFocused && Platform.OS === 'web' && { color: '#D81B60' }
+        isHovered && !isFocused && Platform.OS === 'web' && { color: '#333333' }
       ]}>
         {tab.label}
       </Text>
@@ -98,7 +98,7 @@ function TopNavBar() {
         {/* Tabs or Hamburger */}
         {isMobile ? (
           <Pressable onPress={() => setMenuOpen(!menuOpen)} style={styles.hamburgerBtn}>
-            <Ionicons name={menuOpen ? "close" : "menu"} size={32} color="#C2185B" />
+            <Ionicons name={menuOpen ? "close" : "menu"} size={32} color="#1A1A1A" />
           </Pressable>
         ) : (
           <View style={styles.tabs}>
@@ -187,8 +187,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 14,
     borderBottomWidth: 1.5,
-    borderBottomColor: '#F0D0E0',
-    shadowColor: '#C2185B',
+    borderBottomColor: '#EAEAEA',
+    shadowColor: '#1A1A1A',
     shadowOpacity: 0.08,
     shadowRadius: 12,
     elevation: 10,
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#C2185B',
+    color: '#1A1A1A',
     letterSpacing: 0.5,
   },
   tabs: {
@@ -222,19 +222,19 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#AD7FA0',
+    color: '#666666',
   },
   mobileTabLabel: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#AD7FA0',
+    color: '#666666',
   },
   tabLabelActive: {
-    color: '#C2185B',
+    color: '#1A1A1A',
   },
   badge: {
     position: 'absolute', top: -6, right: -10,
-    backgroundColor: '#C2185B', borderRadius: 10,
+    backgroundColor: '#1A1A1A', borderRadius: 10,
     minWidth: 18, height: 18,
     alignItems: 'center', justifyContent: 'center',
     borderWidth: 1.5, borderColor: '#fff',
@@ -256,8 +256,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1.5,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
-    borderBottomColor: '#F0D0E0',
-    shadowColor: '#C2185B',
+    borderBottomColor: '#EAEAEA',
+    shadowColor: '#1A1A1A',
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 10,

@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Image, TouchableOpacity,
-  SafeAreaView, ActivityIndicator, Alert,
+  SafeAreaView, ActivityIndicator, Alert, Animated
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/lib/api';
 import { useCart } from '@/context/CartContext';
+
+const getImageUrl = (url: string) => {
+  if (!url) return 'https://via.placeholder.com/600';
+  if (url.startsWith('/')) {
+    return `${api.defaults.baseURL}${url}`;
+  }
+  return url;
+};
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -15,9 +23,20 @@ export default function ProductDetailScreen() {
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const { addToCart } = useCart();
+  
+  // animations
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
 
   useEffect(() => {
-    api.get(`/api/products/${id}`).then(r => setProduct(r.data)).finally(() => setLoading(false));
+    api.get(`/api/products/${id}`).then(r => {
+      setProduct(r.data);
+      // start animation once data loads
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+        Animated.spring(slideAnim, { toValue: 0, tension: 40, friction: 7, useNativeDriver: true }),
+      ]).start();
+    }).finally(() => setLoading(false));
   }, [id]);
 
   const handleAdd = async () => {
@@ -29,17 +48,21 @@ export default function ProductDetailScreen() {
     finally { setAdding(false); }
   };
 
-  if (loading) return <View style={styles.loader}><ActivityIndicator color="#C2185B" size="large" /></View>;
+  if (loading) return <View style={styles.loader}><ActivityIndicator color="#1A1A1A" size="large" /></View>;
   if (!product) return <View style={styles.loader}><Text>Product not found</Text></View>;
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <Animated.ScrollView 
+        showsVerticalScrollIndicator={false} 
+        contentContainerStyle={styles.scrollContent}
+        style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
+      >
         {/* Image */}
         <View style={styles.imgContainer}>
-          <Image source={{ uri: product.image_url }} style={styles.img} resizeMode="cover" />
+          <Image source={{ uri: getImageUrl(product.image_url) }} style={styles.img} resizeMode="cover" />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={20} color="#C2185B" />
+            <Ionicons name="arrow-back" size={20} color="#1A1A1A" />
           </TouchableOpacity>
           <View style={styles.catBadge}>
             <Text style={styles.catBadgeText}>{product.categories?.icon} {product.categories?.name}</Text>
@@ -78,7 +101,7 @@ export default function ProductDetailScreen() {
               <Text style={styles.tagLabel}>Targets:</Text>
               <View style={styles.tags}>
                 {product.skin_concerns.map((c: string) => (
-                  <View key={c} style={[styles.tag, styles.tagConcern]}><Text style={[styles.tagText, { color: '#C2185B' }]}>{c}</Text></View>
+                  <View key={c} style={[styles.tag, styles.tagConcern]}><Text style={[styles.tagText, { color: '#1A1A1A' }]}>{c}</Text></View>
                 ))}
               </View>
             </View>
@@ -104,54 +127,60 @@ export default function ProductDetailScreen() {
             </View>
           )}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
 
       {/* Sticky Add to Cart */}
       <View style={styles.footer}>
-        <View>
-          <Text style={styles.footerLabel}>Price</Text>
-          <Text style={styles.footerPrice}>${product.price?.toFixed(2)}</Text>
+        <View style={styles.footerInner}>
+          <View>
+            <Text style={styles.footerLabel}>Price</Text>
+            <Text style={styles.footerPrice}>${product.price?.toFixed(2)}</Text>
+          </View>
+          <TouchableOpacity style={[styles.addBtn, added && styles.addBtnAdded]} onPress={handleAdd} disabled={adding || added}>
+            {adding ? <ActivityIndicator color="#fff" /> : <Text style={styles.addBtnText}>{added ? '✓ Added to Cart' : '+ Add to Cart'}</Text>}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={[styles.addBtn, added && styles.addBtnAdded]} onPress={handleAdd} disabled={adding || added}>
-          {adding ? <ActivityIndicator color="#fff" /> : <Text style={styles.addBtnText}>{added ? '✓ Added to Cart' : '+ Add to Cart'}</Text>}
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
-  loader: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
+  scrollContent: { maxWidth: 800, alignSelf: 'center', width: '100%' },
+  loader: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F9F9F9' },
   imgContainer: { position: 'relative' },
-  img: { width: '100%', height: 300 },
+  img: { width: '100%', height: 350 },
   backBtn: { position: 'absolute', top: 16, left: 16, width: 38, height: 38, borderRadius: 19, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 6, elevation: 4 },
-  catBadge: { position: 'absolute', bottom: 12, right: 14, backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 4 },
-  catBadgeText: { fontSize: 12, fontWeight: '700', color: '#C2185B' },
+  catBadge: { position: 'absolute', bottom: 12, right: 14, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 6 },
+  catBadgeText: { fontSize: 13, fontWeight: '700', color: '#1A1A1A' },
   info: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, marginTop: -24, padding: 24 },
-  brand: { fontSize: 12, color: '#999', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
-  name: { fontSize: 22, fontWeight: '800', color: '#2D2D2D', marginTop: 4, lineHeight: 30 },
-  priceRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 12 },
-  price: { fontSize: 28, fontWeight: '800', color: '#C2185B' },
+  brand: { fontSize: 13, color: '#999', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
+  name: { fontSize: 24, fontWeight: '800', color: '#2D2D2D', marginTop: 4, lineHeight: 32 },
+  priceRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 14 },
+  price: { fontSize: 30, fontWeight: '800', color: '#1A1A1A' },
   ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  rating: { fontSize: 13, color: '#666' },
-  tagSection: { marginBottom: 12 },
-  tagLabel: { fontSize: 13, fontWeight: '700', color: '#555', marginBottom: 6 },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  tag: { backgroundColor: '#F5E6F0', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 4 },
-  tagConcern: { backgroundColor: '#FFE4EE' },
-  tagText: { fontSize: 12, color: '#9B59B6', fontWeight: '600' },
-  section: { marginTop: 16 },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 6 },
-  sectionText: { fontSize: 14, color: '#666', lineHeight: 22 },
+  rating: { fontSize: 14, color: '#666' },
+  tagSection: { marginBottom: 16 },
+  tagLabel: { fontSize: 14, fontWeight: '700', color: '#555', marginBottom: 8 },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  tag: { backgroundColor: '#F0F0F0', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 },
+  tagConcern: { backgroundColor: '#EAEAEA' },
+  tagText: { fontSize: 13, color: '#666666', fontWeight: '600' },
+  section: { marginTop: 20 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#333', marginBottom: 8 },
+  sectionText: { fontSize: 15, color: '#666', lineHeight: 24 },
   footer: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    backgroundColor: '#fff', padding: 20, borderTopWidth: 1.5, borderTopColor: '#F0D0E0',
+    backgroundColor: '#fff', borderTopWidth: 1.5, borderTopColor: '#EAEAEA',
     shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, elevation: 10,
   },
-  footerLabel: { fontSize: 12, color: '#999', fontWeight: '600' },
-  footerPrice: { fontSize: 22, fontWeight: '800', color: '#2D2D2D' },
-  addBtn: { backgroundColor: '#C2185B', borderRadius: 14, paddingHorizontal: 28, paddingVertical: 14, shadowColor: '#C2185B', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
+  footerInner: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    padding: 20, maxWidth: 800, alignSelf: 'center', width: '100%'
+  },
+  footerLabel: { fontSize: 13, color: '#999', fontWeight: '600' },
+  footerPrice: { fontSize: 24, fontWeight: '800', color: '#2D2D2D' },
+  addBtn: { backgroundColor: '#1A1A1A', borderRadius: 14, paddingHorizontal: 30, paddingVertical: 16, shadowColor: '#1A1A1A', shadowOpacity: 0.2, shadowRadius: 8, elevation: 6 },
   addBtnAdded: { backgroundColor: '#4CAF50' },
   addBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

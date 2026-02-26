@@ -191,7 +191,7 @@ export default function QuizScreen() {
       <View style={styles.loadingContainer}>
         <Text style={styles.loadingEmoji}>🧴</Text>
         <Text style={styles.loadingText}>Analyzing your skin profile...</Text>
-        <ActivityIndicator color="#C2185B" size="large" style={{ marginTop: 20 }} />
+        <ActivityIndicator color="#1A1A1A" size="large" style={{ marginTop: 20 }} />
       </View>
     );
   }
@@ -203,7 +203,7 @@ export default function QuizScreen() {
         <View style={styles.headerTop}>
           {step > 0 ? (
             <TouchableOpacity onPress={goBack} style={styles.backBtn}>
-              <Ionicons name="chevron-back" size={22} color="#C2185B" />
+              <Ionicons name="chevron-back" size={22} color="#1A1A1A" />
             </TouchableOpacity>
           ) : <View style={{ width: 36 }} />}
           <Text style={styles.stepText}>{step + 1} / {totalSteps}</Text>
@@ -241,7 +241,7 @@ export default function QuizScreen() {
                 )}
                 {selected && (
                   <View style={styles.checkmark}>
-                    <Ionicons name="checkmark-circle" size={22} color="#C2185B" />
+                    <Ionicons name="checkmark-circle" size={22} color="#1A1A1A" />
                   </View>
                 )}
               </TouchableOpacity>
@@ -254,29 +254,29 @@ export default function QuizScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   header: { paddingHorizontal: 20, paddingTop: 16 },
   headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFE4EE', alignItems: 'center', justifyContent: 'center' },
-  stepText: { fontSize: 14, fontWeight: '600', color: '#AD7FA0' },
-  progressTrack: { height: 6, backgroundColor: '#F0D0E0', borderRadius: 3 },
-  progressBar: { height: 6, backgroundColor: '#C2185B', borderRadius: 3 },
+  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
+  stepText: { fontSize: 14, fontWeight: '600', color: '#666666' },
+  progressTrack: { height: 6, backgroundColor: '#EAEAEA', borderRadius: 3 },
+  progressBar: { height: 6, backgroundColor: '#1A1A1A', borderRadius: 3 },
   content: { padding: 24, paddingBottom: 60 },
   question: { fontSize: 22, fontWeight: '800', color: '#2D2D2D', marginTop: 8, lineHeight: 32 },
-  subtitle: { fontSize: 14, color: '#AD7FA0', marginTop: 6, marginBottom: 28 },
+  subtitle: { fontSize: 14, color: '#666666', marginTop: 6, marginBottom: 28 },
   options: { gap: 12 },
   option: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 18, borderWidth: 2, borderColor: '#F0D0E0',
+    backgroundColor: '#fff', borderRadius: 16, padding: 18, borderWidth: 2, borderColor: '#EAEAEA',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    shadowColor: '#C2185B', shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
+    shadowColor: '#1A1A1A', shadowOpacity: 0.05, shadowRadius: 10, elevation: 3,
   },
-  optionSelected: { borderColor: '#C2185B', backgroundColor: '#FFF0F5' },
+  optionSelected: { borderColor: '#1A1A1A', backgroundColor: '#F9F9F9' },
   optionLabel: { fontSize: 16, color: '#333', fontWeight: '600', flex: 1 },
-  optionLabelSelected: { color: '#C2185B' },
+  optionLabelSelected: { color: '#1A1A1A' },
   optionSub: { fontSize: 12, color: '#999', marginTop: 2 },
-  optionSubSelected: { color: '#E91E8C' },
+  optionSubSelected: { color: '#333333' },
   checkmark: { marginLeft: 8 },
-  loadingContainer: { flex: 1, backgroundColor: '#FFF0F5', alignItems: 'center', justifyContent: 'center' },
+  loadingContainer: { flex: 1, backgroundColor: '#F9F9F9', alignItems: 'center', justifyContent: 'center' },
   loadingEmoji: { fontSize: 60 },
-  loadingText: { fontSize: 18, color: '#C2185B', fontWeight: '700', marginTop: 16 },
+  loadingText: { fontSize: 18, color: '#1A1A1A', fontWeight: '700', marginTop: 16 },
 });

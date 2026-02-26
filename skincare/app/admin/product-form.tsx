@@ -59,7 +59,7 @@ export default function ProductFormScreen() {
               <TextInput
                 style={[styles.input, field.multiline && styles.multiline]}
                 placeholder={field.placeholder}
-                placeholderTextColor="#C4A9BA"
+                placeholderTextColor="#999999"
                 keyboardType={field.keyboard as any || 'default'}
                 multiline={field.multiline}
                 value={(form as any)[field.key]}
@@ -78,13 +78,13 @@ export default function ProductFormScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   scroll: { padding: 20 },
   pageTitle: { fontSize: 22, fontWeight: '800', color: '#2D2D2D', marginBottom: 20 },
   inputGroup: { marginBottom: 16 },
   label: { fontSize: 13, fontWeight: '600', color: '#555', marginBottom: 6 },
-  input: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#F0D0E0', borderRadius: 12, padding: 14, fontSize: 15, color: '#333' },
+  input: { backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#EAEAEA', borderRadius: 12, padding: 14, fontSize: 15, color: '#333' },
   multiline: { height: 100, textAlignVertical: 'top' },
-  saveBtn: { backgroundColor: '#C2185B', borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 8, shadowColor: '#C2185B', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
+  saveBtn: { backgroundColor: '#1A1A1A', borderRadius: 14, paddingVertical: 16, alignItems: 'center', marginTop: 8, shadowColor: '#1A1A1A', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
   saveBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 });

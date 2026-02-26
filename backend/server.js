@@ -33,6 +33,12 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 /* ================================
+   STATIC FILES
+   ================================ */
+const path = require('path');
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+/* ================================
    ROOT & HEALTH CHECK
    ================================ */
 

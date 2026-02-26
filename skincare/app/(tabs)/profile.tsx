@@ -45,7 +45,7 @@ export default function ProfileScreen() {
           <Text style={styles.email}>{user?.email}</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-          <Ionicons name="log-out-outline" size={22} color="#C2185B" />
+          <Ionicons name="log-out-outline" size={22} color="#1A1A1A" />
         </TouchableOpacity>
       </View>
 
@@ -79,7 +79,7 @@ export default function ProfileScreen() {
         <Text style={styles.sectionTitle}>Order History</Text>
 
         {loading ? (
-          <ActivityIndicator color="#C2185B" style={{ marginTop: 30 }} />
+          <ActivityIndicator color="#1A1A1A" style={{ marginTop: 30 }} />
         ) : orders.length === 0 ? (
           <View style={styles.empty}>
             <Text style={styles.emptyEmoji}>📦</Text>
@@ -105,7 +105,7 @@ export default function ProfileScreen() {
               </View>
               <View style={styles.viewBtn}>
                 <Text style={styles.viewBtnText}>View Details</Text>
-                <Ionicons name="chevron-forward" size={14} color="#C2185B" />
+                <Ionicons name="chevron-forward" size={14} color="#1A1A1A" />
               </View>
             </TouchableOpacity>
           ))
@@ -117,22 +117,22 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20, paddingBottom: 16 },
   greeting: { fontSize: 22, fontWeight: '800', color: '#2D2D2D' },
-  email: { fontSize: 13, color: '#AD7FA0', marginTop: 2 },
-  logoutBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#FFE4EE', alignItems: 'center', justifyContent: 'center' },
-  adminBanner: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#C2185B', marginHorizontal: 16, borderRadius: 14, padding: 14, marginBottom: 6, shadowColor: '#C2185B', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
+  email: { fontSize: 13, color: '#666666', marginTop: 2 },
+  logoutBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
+  adminBanner: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#1A1A1A', marginHorizontal: 16, borderRadius: 14, padding: 14, marginBottom: 6, shadowColor: '#1A1A1A', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
   adminBannerText: { flex: 1, color: '#fff', fontSize: 15, fontWeight: '700' },
   statsRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 10, marginTop: 10, marginBottom: 24 },
-  statCard: { flex: 1, backgroundColor: '#fff', borderRadius: 16, padding: 14, alignItems: 'center', borderWidth: 1.5, borderColor: '#F0D0E0' },
-  statNum: { fontSize: 22, fontWeight: '800', color: '#C2185B' },
+  statCard: { flex: 1, backgroundColor: '#fff', borderRadius: 16, padding: 14, alignItems: 'center', borderWidth: 1.5, borderColor: '#EAEAEA' },
+  statNum: { fontSize: 22, fontWeight: '800', color: '#1A1A1A' },
   statLabel: { fontSize: 11, color: '#999', fontWeight: '600', marginTop: 2 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#2D2D2D', paddingHorizontal: 20, marginBottom: 12 },
   empty: { alignItems: 'center', marginTop: 40 },
   emptyEmoji: { fontSize: 50 },
-  emptyText: { fontSize: 16, color: '#AD7FA0', marginTop: 12, fontWeight: '600' },
-  orderCard: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 12, borderRadius: 16, padding: 16, borderWidth: 1.5, borderColor: '#F0D0E0', shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 3 },
+  emptyText: { fontSize: 16, color: '#666666', marginTop: 12, fontWeight: '600' },
+  orderCard: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 12, borderRadius: 16, padding: 16, borderWidth: 1.5, borderColor: '#EAEAEA', shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 3 },
   orderTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   orderId: { fontSize: 16, fontWeight: '700', color: '#333' },
   statusBadge: { borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 },
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   orderDate: { fontSize: 13, color: '#999', marginTop: 6 },
   orderBottom: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
   orderItems: { fontSize: 13, color: '#666' },
-  orderTotal: { fontSize: 17, fontWeight: '800', color: '#C2185B' },
+  orderTotal: { fontSize: 17, fontWeight: '800', color: '#1A1A1A' },
   viewBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 8 },
-  viewBtnText: { fontSize: 13, color: '#C2185B', fontWeight: '600' },
+  viewBtnText: { fontSize: 13, color: '#1A1A1A', fontWeight: '600' },
 });

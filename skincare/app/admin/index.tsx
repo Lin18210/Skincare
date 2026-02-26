@@ -17,7 +17,7 @@ const CHART_CFG = {
   decimalPlaces: 0,
   color: (o = 1) => `rgba(194, 24, 91, ${o})`,
   labelColor: () => '#999',
-  propsForBackgroundLines: { stroke: '#F0D0E0' },
+  propsForBackgroundLines: { stroke: '#EAEAEA' },
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -73,14 +73,14 @@ export default function AdminDashboard() {
     <SafeAreaView style={s.container}>
       <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
         {loading ? (
-          <ActivityIndicator color="#C2185B" size="large" style={{ marginTop: 60 }} />
+          <ActivityIndicator color="#1A1A1A" size="large" style={{ marginTop: 60 }} />
         ) : (<>
 
           {/* ── KPI Stats ── */}
           <Text style={s.sectionTitle}>Overview</Text>
           <View style={s.statsGrid}>
             <View style={s.statCard}>
-              <Ionicons name="receipt-outline" size={22} color="#C2185B" />
+              <Ionicons name="receipt-outline" size={22} color="#1A1A1A" />
               <Text style={s.statNum}>{stats?.totalOrders || 0}</Text>
               <Text style={s.statLabel}>Total Orders</Text>
             </View>
@@ -185,40 +185,40 @@ export default function AdminDashboard() {
 }
 
 const s = StyleSheet.create({
-  container:       { flex: 1, backgroundColor: '#FFF0F5' },
+  container:       { flex: 1, backgroundColor: '#F9F9F9' },
   scroll:          { padding: 20, paddingBottom: 40 },
   sectionTitle:    { fontSize: 18, fontWeight: '700', color: '#2D2D2D', marginBottom: 12 },
 
   // KPI
   statsGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 20 },
-  statCard:   { flex: 1, minWidth: '45%', backgroundColor: '#fff', borderRadius: 18, padding: 16, alignItems: 'center', borderWidth: 1.5, borderColor: '#F0D0E0', gap: 6 },
+  statCard:   { flex: 1, minWidth: '45%', backgroundColor: '#fff', borderRadius: 18, padding: 16, alignItems: 'center', borderWidth: 1.5, borderColor: '#EAEAEA', gap: 6 },
   statWide:   { minWidth: '100%' },
-  statNum:    { fontSize: 26, fontWeight: '800', color: '#C2185B' },
+  statNum:    { fontSize: 26, fontWeight: '800', color: '#1A1A1A' },
   statLabel:  { fontSize: 12, color: '#999', fontWeight: '600' },
 
   // Charts
-  chartCard:   { backgroundColor: '#fff', borderRadius: 20, padding: 16, borderWidth: 1.5, borderColor: '#F0D0E0', marginBottom: 16 },
+  chartCard:   { backgroundColor: '#fff', borderRadius: 20, padding: 16, borderWidth: 1.5, borderColor: '#EAEAEA', marginBottom: 16 },
   chartHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   chartTitle:  { fontSize: 15, fontWeight: '700', color: '#333' },
-  noData:      { textAlign: 'center', color: '#AD7FA0', paddingVertical: 24, fontSize: 13 },
+  noData:      { textAlign: 'center', color: '#666666', paddingVertical: 24, fontSize: 13 },
 
   // Toggle
   toggle:          { flexDirection: 'row', backgroundColor: '#F5E6EF', borderRadius: 10, padding: 3, gap: 3 },
   toggleBtn:       { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8 },
-  toggleActive:    { backgroundColor: '#C2185B' },
-  toggleText:      { fontSize: 12, fontWeight: '600', color: '#AD7FA0' },
+  toggleActive:    { backgroundColor: '#1A1A1A' },
+  toggleText:      { fontSize: 12, fontWeight: '600', color: '#666666' },
   toggleTextActive:{ color: '#fff' },
 
   // Status breakdown
   statusGrid:  { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 12 },
-  statusPill:  { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF5FA', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 7, gap: 6, borderWidth: 1, borderColor: '#F0D0E0' },
+  statusPill:  { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF5FA', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 7, gap: 6, borderWidth: 1, borderColor: '#EAEAEA' },
   statusDot:   { width: 8, height: 8, borderRadius: 4 },
   statusLabel: { fontSize: 12, fontWeight: '600', color: '#555', textTransform: 'capitalize' },
   statusCount: { fontSize: 14, fontWeight: '800' },
 
   // Nav
   navCards: { gap: 10 },
-  navCard:  { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, padding: 16, borderWidth: 1.5, borderColor: '#F0D0E0', gap: 14 },
+  navCard:  { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, padding: 16, borderWidth: 1.5, borderColor: '#EAEAEA', gap: 14 },
   navIcon:  { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   navLabel: { flex: 1, fontSize: 16, fontWeight: '700', color: '#333' },
 });

@@ -41,7 +41,7 @@ export default function DeliveryScreen() {
       {/* Header with steps */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={20} color="#C2185B" />
+          <Ionicons name="arrow-back" size={20} color="#1A1A1A" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Delivery Details</Text>
         <View style={{ width: 36 }} />
@@ -68,11 +68,11 @@ export default function DeliveryScreen() {
               <View style={styles.inputGroup} key={field.key}>
                 <Text style={styles.label}>{field.label}</Text>
                 <View style={[styles.inputRow, errors[field.key] && styles.inputError]}>
-                  <Ionicons name={field.icon as any} size={18} color="#AD7FA0" style={{ marginRight: 8 }} />
+                  <Ionicons name={field.icon as any} size={18} color="#666666" style={{ marginRight: 8 }} />
                   <TextInput
                     style={[styles.input, field.multiline && { height: 80, textAlignVertical: 'top' }]}
                     placeholder={field.placeholder}
-                    placeholderTextColor="#C4A9BA"
+                    placeholderTextColor="#999999"
                     keyboardType={field.keyboard as any || 'default'}
                     autoCapitalize={field.keyboard === 'email-address' ? 'none' : 'words'}
                     multiline={field.multiline}
@@ -123,38 +123,38 @@ export default function DeliveryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20, paddingBottom: 12 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFE4EE', alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
   headerTitle: { fontSize: 18, fontWeight: '700', color: '#2D2D2D' },
-  steps: { flexDirection: 'row', justifyContent: 'center', gap: 40, paddingBottom: 20, borderBottomWidth: 1.5, borderBottomColor: '#F0D0E0' },
+  steps: { flexDirection: 'row', justifyContent: 'center', gap: 40, paddingBottom: 20, borderBottomWidth: 1.5, borderBottomColor: '#EAEAEA' },
   stepItem: { alignItems: 'center', gap: 4 },
-  stepDot: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#F0D0E0', alignItems: 'center', justifyContent: 'center' },
-  stepDotActive: { backgroundColor: '#C2185B' },
-  stepNum: { fontSize: 14, fontWeight: '700', color: '#AD7FA0' },
+  stepDot: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#EAEAEA', alignItems: 'center', justifyContent: 'center' },
+  stepDotActive: { backgroundColor: '#1A1A1A' },
+  stepNum: { fontSize: 14, fontWeight: '700', color: '#666666' },
   stepNumActive: { color: '#fff' },
-  stepLabel: { fontSize: 11, color: '#AD7FA0', fontWeight: '600' },
-  stepLabelActive: { color: '#C2185B' },
+  stepLabel: { fontSize: 11, color: '#666666', fontWeight: '600' },
+  stepLabelActive: { color: '#1A1A1A' },
   scroll: { padding: 20 },
-  formCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: '#F0D0E0', marginBottom: 16 },
+  formCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: '#EAEAEA', marginBottom: 16 },
   sectionTitle: { fontSize: 17, fontWeight: '700', color: '#333', marginBottom: 16 },
   inputGroup: { marginBottom: 16 },
   label: { fontSize: 13, fontWeight: '600', color: '#555', marginBottom: 6 },
-  inputRow: { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#FFF5FA', borderWidth: 1.5, borderColor: '#F0D0E0', borderRadius: 12, padding: 12 },
+  inputRow: { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#FFF5FA', borderWidth: 1.5, borderColor: '#EAEAEA', borderRadius: 12, padding: 12 },
   inputError: { borderColor: '#E53935' },
   input: { flex: 1, fontSize: 15, color: '#333' },
   errorText: { color: '#E53935', fontSize: 12, marginTop: 4 },
-  summaryCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: '#F0D0E0' },
+  summaryCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: '#EAEAEA' },
   summaryTitle: { fontSize: 17, fontWeight: '700', color: '#333', marginBottom: 12 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   summaryLabel: { fontSize: 13, color: '#666', flex: 1, marginRight: 8 },
   summaryValue: { fontSize: 13, fontWeight: '600', color: '#333' },
-  divider: { height: 1.5, backgroundColor: '#F0D0E0', marginVertical: 8 },
+  divider: { height: 1.5, backgroundColor: '#EAEAEA', marginVertical: 8 },
   totalLabel: { fontSize: 16, fontWeight: '800', color: '#2D2D2D' },
-  totalValue: { fontSize: 18, fontWeight: '800', color: '#C2185B' },
-  footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', padding: 20, borderTopWidth: 1.5, borderTopColor: '#F0D0E0', elevation: 10 },
+  totalValue: { fontSize: 18, fontWeight: '800', color: '#1A1A1A' },
+  footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', padding: 20, borderTopWidth: 1.5, borderTopColor: '#EAEAEA', elevation: 10 },
   footerLabel: { fontSize: 12, color: '#999' },
   footerTotal: { fontSize: 22, fontWeight: '800', color: '#2D2D2D' },
-  nextBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#C2185B', borderRadius: 14, paddingHorizontal: 20, paddingVertical: 14, shadowColor: '#C2185B', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
+  nextBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#1A1A1A', borderRadius: 14, paddingHorizontal: 20, paddingVertical: 14, shadowColor: '#1A1A1A', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
   nextBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });

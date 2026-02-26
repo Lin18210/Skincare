@@ -15,14 +15,14 @@ export default function OrderDetailScreen() {
     api.get(`/api/orders/${id}`).then(r => setOrder(r.data)).finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <View style={styles.loader}><ActivityIndicator color="#C2185B" size="large" /></View>;
+  if (loading) return <View style={styles.loader}><ActivityIndicator color="#1A1A1A" size="large" /></View>;
   if (!order) return <View style={styles.loader}><Text>Order not found</Text></View>;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={20} color="#C2185B" />
+          <Ionicons name="arrow-back" size={20} color="#1A1A1A" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Order Details</Text>
         <View style={{ width: 36 }} />
@@ -77,32 +77,32 @@ export default function OrderDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
-  loader: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
+  loader: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F9F9F9' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20, paddingBottom: 12 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#FFE4EE', alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
   headerTitle: { fontSize: 18, fontWeight: '700', color: '#2D2D2D' },
   scroll: { padding: 16 },
-  orderBanner: { backgroundColor: '#fff', borderRadius: 20, padding: 20, alignItems: 'center', borderWidth: 1.5, borderColor: '#F0D0E0', marginBottom: 16 },
+  orderBanner: { backgroundColor: '#fff', borderRadius: 20, padding: 20, alignItems: 'center', borderWidth: 1.5, borderColor: '#EAEAEA', marginBottom: 16 },
   orderId: { fontSize: 22, fontWeight: '800', color: '#2D2D2D' },
   statusBadge: { backgroundColor: '#4CAF50', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 5, marginTop: 8 },
   statusText: { color: '#fff', fontSize: 12, fontWeight: '700', textTransform: 'uppercase' },
   orderDate: { fontSize: 13, color: '#999', marginTop: 8 },
-  card: { backgroundColor: '#fff', borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: '#F0D0E0', marginBottom: 16 },
+  card: { backgroundColor: '#fff', borderRadius: 20, padding: 20, borderWidth: 1.5, borderColor: '#EAEAEA', marginBottom: 16 },
   cardTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 14 },
   itemRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   itemImg: { width: 56, height: 56, borderRadius: 10, marginRight: 12 },
   itemInfo: { flex: 1 },
   itemName: { fontSize: 14, fontWeight: '600', color: '#333' },
   itemQty: { fontSize: 12, color: '#999', marginTop: 2 },
-  itemPrice: { fontSize: 15, fontWeight: '700', color: '#C2185B' },
+  itemPrice: { fontSize: 15, fontWeight: '700', color: '#1A1A1A' },
   deliveryName: { fontSize: 16, fontWeight: '700', color: '#333' },
   deliveryDetail: { fontSize: 14, color: '#666', marginTop: 4 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   summaryLabel: { fontSize: 14, color: '#666' },
   summaryValue: { fontSize: 14, fontWeight: '600', color: '#333' },
-  divider: { height: 1.5, backgroundColor: '#F0D0E0', marginVertical: 8 },
+  divider: { height: 1.5, backgroundColor: '#EAEAEA', marginVertical: 8 },
   totalLabel: { fontSize: 16, fontWeight: '800', color: '#2D2D2D' },
-  totalValue: { fontSize: 18, fontWeight: '800', color: '#C2185B' },
+  totalValue: { fontSize: 18, fontWeight: '800', color: '#1A1A1A' },
   paymentInfo: { fontSize: 13, color: '#999', marginTop: 8 },
 });

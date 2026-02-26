@@ -43,7 +43,7 @@ export default function AdminProductsScreen() {
           style={styles.editBtn}
           onPress={() => router.push({ pathname: '/admin/product-form', params: { product: JSON.stringify(item) } })}
         >
-          <Ionicons name="pencil" size={16} color="#C2185B" />
+          <Ionicons name="pencil" size={16} color="#1A1A1A" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteBtn} onPress={() => handleDelete(item.id, item.name)}>
           <Ionicons name="trash-outline" size={16} color="#E53935" />
@@ -55,7 +55,7 @@ export default function AdminProductsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
-        <ActivityIndicator color="#C2185B" size="large" style={{ marginTop: 40 }} />
+        <ActivityIndicator color="#1A1A1A" size="large" style={{ marginTop: 40 }} />
       ) : (
         <FlatList
           data={products}
@@ -77,17 +77,17 @@ export default function AdminProductsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   list: { padding: 16 },
-  card: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 16, marginBottom: 12, overflow: 'hidden', borderWidth: 1.5, borderColor: '#F0D0E0' },
+  card: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 16, marginBottom: 12, overflow: 'hidden', borderWidth: 1.5, borderColor: '#EAEAEA' },
   img: { width: 80, height: 88 },
   info: { flex: 1, padding: 10, justifyContent: 'center' },
   brand: { fontSize: 10, color: '#999', fontWeight: '700', textTransform: 'uppercase' },
   name: { fontSize: 14, fontWeight: '700', color: '#333', marginTop: 2 },
-  cat: { fontSize: 12, color: '#C2185B', fontWeight: '600', marginTop: 2 },
+  cat: { fontSize: 12, color: '#1A1A1A', fontWeight: '600', marginTop: 2 },
   price: { fontSize: 16, fontWeight: '800', color: '#2D2D2D', marginTop: 4 },
   actions: { padding: 10, justifyContent: 'space-around' },
-  editBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#FFE4EE', alignItems: 'center', justifyContent: 'center' },
+  editBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
   deleteBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#FFEBEE', alignItems: 'center', justifyContent: 'center' },
-  fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, backgroundColor: '#C2185B', alignItems: 'center', justifyContent: 'center', shadowColor: '#C2185B', shadowOpacity: 0.4, shadowRadius: 10, elevation: 10 },
+  fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, backgroundColor: '#1A1A1A', alignItems: 'center', justifyContent: 'center', shadowColor: '#1A1A1A', shadowOpacity: 0.4, shadowRadius: 10, elevation: 10 },
 });

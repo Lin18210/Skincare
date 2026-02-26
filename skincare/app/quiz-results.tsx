@@ -31,7 +31,7 @@ export default function QuizResults() {
     skin_type = (params.skin_type as string) || '';
   } catch {}
 
-  const skinInfo = SKIN_TYPE_LABEL[skin_type] || { label: 'Your Skin', emoji: '✨', color: '#C2185B' };
+  const skinInfo = SKIN_TYPE_LABEL[skin_type] || { label: 'Your Skin', emoji: '✨', color: '#1A1A1A' };
 
   const handleAddToCart = async (product: any) => {
     try {
@@ -65,7 +65,7 @@ export default function QuizResults() {
           style={[styles.tabBtn, activeTab === 'routine' && styles.tabBtnActive]}
           onPress={() => setActiveTab('routine')}
         >
-          <Ionicons name="list-outline" size={16} color={activeTab === 'routine' ? '#C2185B' : '#AD7FA0'} />
+          <Ionicons name="list-outline" size={16} color={activeTab === 'routine' ? '#1A1A1A' : '#666666'} />
           <Text style={[styles.tabBtnText, activeTab === 'routine' && styles.tabBtnTextActive]}>
             My Routine
           </Text>
@@ -74,7 +74,7 @@ export default function QuizResults() {
           style={[styles.tabBtn, activeTab === 'products' && styles.tabBtnActive]}
           onPress={() => setActiveTab('products')}
         >
-          <Ionicons name="cube-outline" size={16} color={activeTab === 'products' ? '#C2185B' : '#AD7FA0'} />
+          <Ionicons name="cube-outline" size={16} color={activeTab === 'products' ? '#1A1A1A' : '#666666'} />
           <Text style={[styles.tabBtnText, activeTab === 'products' && styles.tabBtnTextActive]}>
             Recommended ({products.length})
           </Text>
@@ -214,7 +214,7 @@ export default function QuizResults() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
 
   // Header
   header: { padding: 20, paddingTop: 16, flexDirection: 'row', alignItems: 'center' },
@@ -225,67 +225,67 @@ const styles = StyleSheet.create({
   headerSub: { fontSize: 13, color: 'rgba(255,255,255,0.85)', marginTop: 2 },
 
   // Tab bar
-  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 1.5, borderBottomColor: '#F0D0E0' },
+  tabBar: { flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 1.5, borderBottomColor: '#EAEAEA' },
   tabBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, gap: 6 },
-  tabBtnActive: { borderBottomWidth: 3, borderBottomColor: '#C2185B' },
-  tabBtnText: { fontSize: 14, fontWeight: '700', color: '#AD7FA0' },
-  tabBtnTextActive: { color: '#C2185B' },
+  tabBtnActive: { borderBottomWidth: 3, borderBottomColor: '#1A1A1A' },
+  tabBtnText: { fontSize: 14, fontWeight: '700', color: '#666666' },
+  tabBtnTextActive: { color: '#1A1A1A' },
 
   scroll: { padding: 16 },
 
   // Routine toggle
-  routineToggle: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 16, padding: 4, marginBottom: 16, borderWidth: 1.5, borderColor: '#F0D0E0' },
+  routineToggle: { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 16, padding: 4, marginBottom: 16, borderWidth: 1.5, borderColor: '#EAEAEA' },
   toggleBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 12 },
-  toggleBtnActive: { backgroundColor: '#FFE4EE' },
+  toggleBtnActive: { backgroundColor: '#F0F0F0' },
   toggleIcon: { fontSize: 16 },
-  toggleText: { fontSize: 14, fontWeight: '700', color: '#AD7FA0' },
-  toggleTextActive: { color: '#C2185B' },
+  toggleText: { fontSize: 14, fontWeight: '700', color: '#666666' },
+  toggleTextActive: { color: '#1A1A1A' },
 
   // Routine steps
   stepCard: { flexDirection: 'row', marginBottom: 0 },
   stepLeft: { alignItems: 'center', width: 40 },
-  stepNumCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#C2185B', alignItems: 'center', justifyContent: 'center', zIndex: 2 },
+  stepNumCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#1A1A1A', alignItems: 'center', justifyContent: 'center', zIndex: 2 },
   stepNumText: { color: '#fff', fontWeight: '800', fontSize: 13 },
-  stepLine: { width: 2, flex: 1, backgroundColor: '#F0D0E0', marginVertical: 4 },
-  stepRight: { flex: 1, marginLeft: 12, backgroundColor: '#fff', borderRadius: 16, padding: 14, marginBottom: 10, borderWidth: 1.5, borderColor: '#F0D0E0' },
+  stepLine: { width: 2, flex: 1, backgroundColor: '#EAEAEA', marginVertical: 4 },
+  stepRight: { flex: 1, marginLeft: 12, backgroundColor: '#fff', borderRadius: 16, padding: 14, marginBottom: 10, borderWidth: 1.5, borderColor: '#EAEAEA' },
   stepHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 6 },
   stepIcon: { fontSize: 20 },
   stepName: { fontSize: 15, fontWeight: '700', color: '#333', flex: 1 },
-  freqBadge: { backgroundColor: '#FFE4EE', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start', marginTop: 4 },
-  freqText: { fontSize: 11, color: '#C2185B', fontWeight: '700' },
+  freqBadge: { backgroundColor: '#F0F0F0', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start', marginTop: 4 },
+  freqText: { fontSize: 11, color: '#1A1A1A', fontWeight: '700' },
   stepTip: { fontSize: 13, color: '#666', lineHeight: 19 },
 
   // Tips
-  tipsCard: { backgroundColor: '#fff', borderRadius: 18, padding: 16, marginTop: 8, marginBottom: 16, borderWidth: 1.5, borderColor: '#F0D0E0' },
+  tipsCard: { backgroundColor: '#fff', borderRadius: 18, padding: 16, marginTop: 8, marginBottom: 16, borderWidth: 1.5, borderColor: '#EAEAEA' },
   tipsTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 12 },
   tipRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 8 },
-  tipDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#C2185B', marginTop: 5 },
+  tipDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#1A1A1A', marginTop: 5 },
   tipText: { flex: 1, fontSize: 13, color: '#555', lineHeight: 19 },
 
   // See products CTA
-  seeProductsBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#C2185B', borderRadius: 14, paddingVertical: 16, marginTop: 4, shadowColor: '#C2185B', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
+  seeProductsBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#1A1A1A', borderRadius: 14, paddingVertical: 16, marginTop: 4, shadowColor: '#1A1A1A', shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 },
   seeProductsBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 
   // Products tab
-  productsIntro: { fontSize: 14, color: '#AD7FA0', fontWeight: '600', marginBottom: 14, textAlign: 'center' },
+  productsIntro: { fontSize: 14, color: '#666666', fontWeight: '600', marginBottom: 14, textAlign: 'center' },
   emptyState: { alignItems: 'center', paddingVertical: 40 },
   emptyEmoji: { fontSize: 50 },
-  emptyText: { fontSize: 16, color: '#AD7FA0', marginTop: 12, fontWeight: '600' },
+  emptyText: { fontSize: 16, color: '#666666', marginTop: 12, fontWeight: '600' },
   productCard: {
     flexDirection: 'row', backgroundColor: '#fff', borderRadius: 16, marginBottom: 12,
-    borderWidth: 1.5, borderColor: '#F0D0E0', overflow: 'hidden',
+    borderWidth: 1.5, borderColor: '#EAEAEA', overflow: 'hidden',
     shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2,
   },
   productLeft: {},
   productImg: { width: 100, height: 115 },
   productInfo: { flex: 1, padding: 12, justifyContent: 'space-between' },
-  productCatBadge: { backgroundColor: '#FFE4EE', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3, alignSelf: 'flex-start', marginBottom: 4 },
-  productCat: { fontSize: 10, color: '#C2185B', fontWeight: '700', textTransform: 'uppercase' },
+  productCatBadge: { backgroundColor: '#F0F0F0', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 3, alignSelf: 'flex-start', marginBottom: 4 },
+  productCat: { fontSize: 10, color: '#1A1A1A', fontWeight: '700', textTransform: 'uppercase' },
   productBrand: { fontSize: 11, color: '#999', fontWeight: '700', textTransform: 'uppercase' },
   productName: { fontSize: 14, fontWeight: '700', color: '#333', lineHeight: 20, marginTop: 2 },
   productBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
-  productPrice: { fontSize: 18, fontWeight: '800', color: '#C2185B' },
-  addBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#C2185B', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 7 },
+  productPrice: { fontSize: 18, fontWeight: '800', color: '#1A1A1A' },
+  addBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#1A1A1A', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 7 },
   addBtnDone: { backgroundColor: '#4CAF50' },
   addBtnText: { color: '#fff', fontSize: 13, fontWeight: '700' },
 });

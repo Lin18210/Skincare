@@ -55,7 +55,7 @@ export default function AdminOrdersScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
-        <ActivityIndicator color="#C2185B" size="large" style={{ marginTop: 40 }} />
+        <ActivityIndicator color="#1A1A1A" size="large" style={{ marginTop: 40 }} />
       ) : (
         <FlatList
           data={orders}
@@ -71,23 +71,23 @@ export default function AdminOrdersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   list: { padding: 16 },
-  count: { fontSize: 14, color: '#AD7FA0', fontWeight: '600', marginBottom: 12 },
-  card: { backgroundColor: '#fff', borderRadius: 16, marginBottom: 12, padding: 16, borderWidth: 1.5, borderColor: '#F0D0E0', shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 3 },
+  count: { fontSize: 14, color: '#666666', fontWeight: '600', marginBottom: 12 },
+  card: { backgroundColor: '#fff', borderRadius: 16, marginBottom: 12, padding: 16, borderWidth: 1.5, borderColor: '#EAEAEA', shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 3 },
   cardTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
   orderId: { fontSize: 16, fontWeight: '700', color: '#333' },
   badge: { borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 },
   badgeText: { color: '#fff', fontSize: 11, fontWeight: '700', textTransform: 'uppercase' },
   customerName: { fontSize: 15, fontWeight: '700', color: '#333', marginTop: 4 },
   customerEmail: { fontSize: 13, color: '#999', marginTop: 2 },
-  date: { fontSize: 12, color: '#AD7FA0', marginTop: 4 },
+  date: { fontSize: 12, color: '#666666', marginTop: 4 },
   cardBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
-  total: { fontSize: 18, fontWeight: '800', color: '#C2185B' },
+  total: { fontSize: 18, fontWeight: '800', color: '#1A1A1A' },
   itemCount: { fontSize: 13, color: '#666' },
   statusBtns: { flexDirection: 'row', gap: 8, marginTop: 12 },
-  statusBtn: { flex: 1, paddingVertical: 6, borderRadius: 8, borderWidth: 1.5, borderColor: '#F0D0E0', alignItems: 'center' },
-  statusBtnActive: { backgroundColor: '#C2185B', borderColor: '#C2185B' },
-  statusBtnText: { fontSize: 11, fontWeight: '700', color: '#AD7FA0' },
+  statusBtn: { flex: 1, paddingVertical: 6, borderRadius: 8, borderWidth: 1.5, borderColor: '#EAEAEA', alignItems: 'center' },
+  statusBtnActive: { backgroundColor: '#1A1A1A', borderColor: '#1A1A1A' },
+  statusBtnText: { fontSize: 11, fontWeight: '700', color: '#666666' },
   statusBtnTextActive: { color: '#fff' },
 });

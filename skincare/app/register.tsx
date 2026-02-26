@@ -61,7 +61,7 @@ export default function RegisterScreen() {
               <TextInput
                 style={styles.input}
                 placeholder={field.placeholder}
-                placeholderTextColor="#C4A9BA"
+                placeholderTextColor="#999999"
                 keyboardType={field.keyboard || 'default'}
                 autoCapitalize={field.keyboard === 'email-address' ? 'none' : 'words'}
                 secureTextEntry={field.secure}
@@ -87,14 +87,14 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   scroll: { flexGrow: 1, justifyContent: 'center', padding: 24 },
   header: { alignItems: 'center', marginBottom: 32 },
-  logo: { fontSize: 36, fontWeight: '800', color: '#C2185B', letterSpacing: 1 },
-  tagline: { fontSize: 14, color: '#AD7FA0', marginTop: 6 },
+  logo: { fontSize: 36, fontWeight: '800', color: '#1A1A1A', letterSpacing: 1 },
+  tagline: { fontSize: 14, color: '#666666', marginTop: 6 },
   card: {
     backgroundColor: '#fff', borderRadius: 24, padding: 28,
-    shadowColor: '#C2185B', shadowOffset: { width: 0, height: 8 },
+    shadowColor: '#1A1A1A', shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.1, shadowRadius: 20, elevation: 8,
   },
   title: { fontSize: 24, fontWeight: '700', color: '#2D2D2D', marginBottom: 4 },
@@ -102,17 +102,17 @@ const styles = StyleSheet.create({
   inputGroup: { marginBottom: 14 },
   label: { fontSize: 13, fontWeight: '600', color: '#555', marginBottom: 6 },
   input: {
-    backgroundColor: '#FFF5FA', borderWidth: 1.5, borderColor: '#F0D0E0',
+    backgroundColor: '#FFF5FA', borderWidth: 1.5, borderColor: '#EAEAEA',
     borderRadius: 12, padding: 14, fontSize: 15, color: '#333',
   },
   btn: {
-    backgroundColor: '#C2185B', borderRadius: 14, paddingVertical: 16,
+    backgroundColor: '#1A1A1A', borderRadius: 14, paddingVertical: 16,
     alignItems: 'center', marginTop: 8,
-    shadowColor: '#C2185B', shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#1A1A1A', shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
   },
   btnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   linkRow: { marginTop: 20, alignItems: 'center' },
   linkText: { color: '#888', fontSize: 14 },
-  link: { color: '#C2185B', fontWeight: '700' },
+  link: { color: '#1A1A1A', fontWeight: '700' },
 });

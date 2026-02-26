@@ -32,7 +32,7 @@ export default function AdminUsersScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
-        <ActivityIndicator color="#C2185B" size="large" style={{ marginTop: 40 }} />
+        <ActivityIndicator color="#1A1A1A" size="large" style={{ marginTop: 40 }} />
       ) : (
         <FlatList
           data={users}
@@ -48,18 +48,18 @@ export default function AdminUsersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF0F5' },
+  container: { flex: 1, backgroundColor: '#F9F9F9' },
   list: { padding: 16 },
-  count: { fontSize: 14, color: '#AD7FA0', fontWeight: '600', marginBottom: 12 },
-  card: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, marginBottom: 10, padding: 14, borderWidth: 1.5, borderColor: '#F0D0E0', gap: 12 },
-  avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#FFE4EE', alignItems: 'center', justifyContent: 'center' },
-  avatarText: { fontSize: 18, fontWeight: '800', color: '#C2185B' },
+  count: { fontSize: 14, color: '#666666', fontWeight: '600', marginBottom: 12 },
+  card: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, marginBottom: 10, padding: 14, borderWidth: 1.5, borderColor: '#EAEAEA', gap: 12 },
+  avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' },
+  avatarText: { fontSize: 18, fontWeight: '800', color: '#1A1A1A' },
   info: { flex: 1 },
   name: { fontSize: 15, fontWeight: '700', color: '#333' },
   email: { fontSize: 13, color: '#999', marginTop: 2 },
-  date: { fontSize: 11, color: '#AD7FA0', marginTop: 2 },
+  date: { fontSize: 11, color: '#666666', marginTop: 2 },
   roleBadge: { backgroundColor: '#F5E6F0', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4 },
-  adminBadge: { backgroundColor: '#FFE4EE' },
-  roleText: { fontSize: 11, fontWeight: '700', color: '#AD7FA0', textTransform: 'uppercase' },
-  adminRoleText: { color: '#C2185B' },
+  adminBadge: { backgroundColor: '#F0F0F0' },
+  roleText: { fontSize: 11, fontWeight: '700', color: '#666666', textTransform: 'uppercase' },
+  adminRoleText: { color: '#1A1A1A' },
 });
